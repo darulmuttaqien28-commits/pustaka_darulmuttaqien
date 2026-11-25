@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pustaka Dakwah & Layanan Publik — Yayasan Darul Muttaqien</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --emerald-deep: #0b3d28;
+      --emerald-mid: #13583c;
+      --emerald-soft: #e9f2ee;
+      --gold-primary: #c59b27;
+      --gold-dark: #a67c1e;
+      --bg-smooth-top: #fcfaf6;
+      --bg-smooth-bottom: #f1eee5;
+      --card-surface: #ffffff;
+      --ink-dark: #1d2622;
+      --ink-muted: #5a6660;
+      --border-subtle: rgba(197, 155, 39, 0.28);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: linear-gradient(180deg, var(--bg-smooth-top) 0%, var(--bg-smooth-bottom) 100%);
+      color: var(--ink-dark);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.68;
+      min-height: 100vh;
+    }
+
+    /* 1. BILAH ATAS: NAVIGASI BALIK KE WEB INDUK (PEGAWAI & SANTRI) */
+    .top-bar {
+      background: #07291b;
+      color: #e8e4d9;
+      font-size: 0.82rem;
+      padding: 9px 20px;
+      border-bottom: 1px solid rgba(197, 155, 39, 0.38);
+      position: relative;
+      z-index: 300;
+    }
+    .top-bar-inner {
+      max-width: 1160px; margin: auto;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+    }
+    .top-bar-group { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .portal-pill-btn {
+      background: rgba(197, 155, 39, 0.22);
+      border: 1px solid var(--gold-primary);
+      color: #f5dc93;
+      padding: 5px 15px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.81rem;
+      display: inline-flex; align-items: center; gap: 6px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .portal-pill-btn:hover { background: var(--gold-primary); color: #07291b; }
+    .portal-pill-home { background: var(--gold-primary); color: #07291b; }
+    .portal-pill-home:hover { background: #f5dc93; color: #07291b; }
+
+    /* 2. HEADER KOP RESMI */
+    header.kop-header {
+      background: linear-gradient(135deg, var(--emerald-deep) 0%, var(--emerald-mid) 100%);
+      color: #ffffff;
+      padding: 26px 20px;
+      border-bottom: 4px solid var(--gold-primary);
+      position: relative;
+      overflow: hidden;
+    }
+    header.kop-header::after {
+      content: "۞";
+      position: absolute; right: -20px; top: -35px;
+      font-family: 'Amiri', serif; font-size: 14rem;
+      color: rgba(255, 255, 255, 0.04); pointer-events: none;
+    }
+    .kop-container {
+      max-width: 1160px; margin: 0 auto;
+      display: flex; align-items: center; gap: 24px; position: relative; z-index: 2;
+    }
+    .kop-logo {
+      flex-shrink: 0; width: 115px; height: 115px;
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 18px; padding: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+      border: 2px solid var(--gold-primary);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .kop-logo img { width: 100%; height: 100%; object-fit: contain; }
+    .kop-info { flex: 1; text-align: left; }
+    .kop-bismillah { font-family: 'Amiri', serif; font-size: 1.35rem; color: #f5dc93; margin-bottom: 2px; }
+    .kop-info h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(1.65rem, 3.2vw, 2.4rem);
+      font-weight: 700; letter-spacing: 0.8px; line-height: 1.15; color: #ffffff; margin-bottom: 6px;
+    }
+    .kop-wilayah { font-size: 0.9rem; font-weight: 600; color: #f5dc93; letter-spacing: 0.4px; margin-bottom: 4px; }
+    .kop-alamat { font-size: 0.86rem; color: #e6f0ec; margin-bottom: 3px; }
+    .kop-akte {
+      display: inline-block; margin-top: 4px; font-size: 0.78rem; color: #d0e2da;
+      background: rgba(0, 0, 0, 0.22); padding: 3px 10px; border-radius: 4px;
+      border-left: 2px solid var(--gold-primary);
+    }
+
+    /* 3. NAVIGASI UTAMA */
+    nav.main-nav {
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border-subtle);
+      box-shadow: 0 4px 16px rgba(11, 61, 40, 0.05);
+      position: sticky; top: 0; z-index: 100;
+      padding: 8px 0;
+    }
+    .nav-inner { max-width: 1160px; margin: 0 auto; display: flex; justify-content: center; align-items: center; padding: 0 15px; }
+    .mobile-btn {
+      display: none; width: 100%; background: none; border: none; padding: 10px;
+      font-size: 0.95rem; font-weight: 700; color: var(--emerald-deep); cursor: pointer;
+    }
+    ul.nav-menu { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 7px; }
+    ul.nav-menu > li { position: relative; display: flex; align-items: center; }
+    ul.nav-menu > li > a {
+      display: inline-flex; align-items: center; justify-content: center;
+      height: 38px; padding: 0 14px;
+      text-decoration: none;
+      color: var(--emerald-deep); font-weight: 700; font-size: 0.86rem;
+      cursor: pointer; transition: all 0.25s ease;
+      border-radius: 10px;
+      border: 1.5px solid transparent;
+      white-space: nowrap;
+    }
+    ul.nav-menu > li > a:hover { color: var(--gold-primary); background: var(--emerald-soft); }
+    ul.nav-menu > li > a.active-menu-item {
+      background: linear-gradient(135deg, var(--emerald-deep), var(--emerald-mid)) !important;
+      color: #f5dc93 !important;
+      box-shadow: 0 3px 10px rgba(11, 61, 40, 0.24);
+      border-color: var(--gold-primary);
+    }
+    ul.sub-kajian {
+      display: none; position: absolute; top: 100%; left: 0;
+      background: var(--card-surface); min-width: 210px; list-style: none;
+      border-radius: 10px; border: 1px solid var(--border-subtle);
+      border-top: 3px solid var(--gold-primary);
+      box-shadow: 0 12px 28px rgba(11, 61, 40, 0.14); z-index: 200; overflow: hidden;
+    }
+    ul.nav-menu > li:hover > ul.sub-kajian { display: block; }
+    ul.sub-kajian li a {
+      display: block; padding: 10px 16px; text-decoration: none; color: var(--ink-dark);
+      font-size: 0.86rem; border-bottom: 1px solid #f4f1ea; cursor: pointer; transition: 0.2s;
+    }
+    ul.sub-kajian li a:hover { background: var(--emerald-deep); color: #f5dc93; padding-left: 20px; }
+
+    .btn-donasi-nav {
+      background: linear-gradient(135deg, var(--gold-primary), #b0871c) !important;
+      color: #ffffff !important;
+      box-shadow: 0 3px 10px rgba(197, 155, 39, 0.25);
+    }
+    .btn-donasi-nav:hover { filter: brightness(1.06); color: #ffffff !important; }
+
+    /* 4. AREA KONTEN UTAMA */
+    .container { max-width: 1160px; margin: 26px auto; padding: 0 18px 48px; }
+    .viewer-panel {
+      background: var(--card-surface);
+      border-radius: 16px; padding: 26px 28px; margin-bottom: 28px;
+      box-shadow: 0 10px 30px rgba(11, 61, 40, 0.06);
+      border: 1px solid rgba(19, 88, 60, 0.16);
+      border-left: 5px solid var(--emerald-mid);
+    }
+    .viewer-tag {
+      display: inline-block; background: var(--emerald-soft); color: var(--emerald-deep);
+      font-size: 0.76rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 10px;
+    }
+    .viewer-panel h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--emerald-deep); margin-bottom: 12px; line-height: 1.25; }
+
+    /* TAMPILAN MAJALAH ELEGAN */
+    .magazine-sheet {
+      background: #fffdf9;
+      border: 1px solid rgba(197, 155, 39, 0.38);
+      border-radius: 14px;
+      padding: 28px 32px;
+      margin-top: 10px;
+      box-shadow: inset 0 0 45px rgba(197, 155, 39, 0.04);
+    }
+    .mag-masthead {
+      border-bottom: 2px solid var(--emerald-deep);
+      padding-bottom: 14px; margin-bottom: 18px;
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 10px;
+    }
+    .mag-rubrik {
+      text-transform: uppercase; letter-spacing: 2px; font-size: 0.74rem;
+      font-weight: 800; color: var(--gold-primary); display: block; margin-bottom: 3px;
+    }
+    .mag-edition-badge {
+      font-size: 0.78rem; color: var(--emerald-deep); font-weight: 700;
+      background: var(--emerald-soft); padding: 4px 12px; border-radius: 6px;
+    }
+    .mag-lead {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.26rem; font-style: italic; color: var(--emerald-deep);
+      line-height: 1.55; border-left: 3px solid var(--gold-primary);
+      padding-left: 16px; margin-bottom: 20px;
+    }
+    .mag-columns {
+      column-count: 2;
+      column-gap: 34px;
+      column-rule: 1px solid rgba(197, 155, 39, 0.3);
+      text-align: justify;
+    }
+    .mag-columns p { margin-bottom: 14px; font-size: 0.94rem; line-height: 1.78; }
+    .mag-columns p:first-of-type::first-letter {
+      float: left; font-family: 'Cormorant Garamond', serif;
+      font-size: 3.3rem; line-height: 0.85; padding-right: 10px; padding-top: 4px;
+      color: var(--emerald-deep); font-weight: 700;
+    }
+    .mag-arabic-box {
+      break-inside: avoid;
+      background: #f5f9f7; border: 1px solid #cce3d8; border-right: 4px solid var(--gold-primary);
+      border-radius: 10px; padding: 14px 16px; margin: 14px 0;
+      text-align: right; direction: rtl;
+      font-family: 'Amiri', serif; font-size: 1.55rem; color: var(--emerald-deep); line-height: 2;
+    }
+    .mag-pullquote {
+      break-inside: avoid;
+      background: linear-gradient(135deg, var(--emerald-deep), var(--emerald-mid));
+      color: #f5dc93; padding: 18px 20px; border-radius: 12px; margin: 16px 0;
+      font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-style: italic;
+      border-left: 4px solid var(--gold-primary);
+    }
+    .khutbah-arab-20 {
+      break-inside: avoid;
+      background: #f5f9f7; border: 1px solid #cce3d8; border-right: 4px solid var(--gold-primary);
+      border-radius: 10px; padding: 12px 16px; margin: 12px 0;
+      text-align: right; direction: rtl;
+      font-family: 'Amiri', serif; font-size: 20pt; color: var(--emerald-deep); line-height: 1.95;
+    }
+
+    /* TOOLBAR & KARTU */
+    .filter-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .pill-btn {
+      padding: 7px 15px; border-radius: 20px; font-size: 0.81rem; font-weight: 700;
+      border: 1px solid var(--border-subtle); background: #fff; color: var(--emerald-deep);
+      cursor: pointer; transition: 0.2s;
+    }
+    .pill-btn.active, .pill-btn:hover { background: var(--emerald-deep); color: #f5dc93; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--emerald-deep); color: #f5dc93 !important;
+      padding: 9px 16px; border-radius: 9px; font-weight: 700; text-decoration: none;
+      font-size: 0.83rem; border: none; cursor: pointer; transition: 0.2s;
+    }
+    .btn-primary:hover { background: var(--emerald-mid); transform: translateY(-1px); }
+    .btn-gold {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, var(--gold-primary), #b0871c); color: #ffffff !important;
+      padding: 9px 16px; border-radius: 9px; font-weight: 700; text-decoration: none;
+      font-size: 0.83rem; border: none; cursor: pointer; transition: 0.2s;
+    }
+    .btn-doc {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #1d4ed8; color: #ffffff !important;
+      padding: 9px 16px; border-radius: 9px; font-weight: 700; text-decoration: none;
+      font-size: 0.83rem; border: none; cursor: pointer; transition: 0.2s;
+    }
+    .btn-wa {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #25d366; color: #ffffff !important;
+      padding: 9px 16px; border-radius: 9px; font-weight: 700; text-decoration: none;
+      font-size: 0.83rem; border: none; cursor: pointer; transition: 0.2s;
+    }
+    .btn-danger {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #fee2e2; color: #991b1b !important;
+      padding: 7px 12px; border-radius: 8px; font-weight: 700;
+      font-size: 0.78rem; border: 1px solid #fecaca; cursor: pointer;
+    }
+
+    .card-grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(295px, 1fr)); gap: 18px; margin-top: 14px; }
+    .mag-card {
+      background: #ffffff; border: 1px solid rgba(19, 88, 60, 0.16);
+      border-top: 3px solid var(--gold-primary); border-radius: 13px; padding: 18px 20px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      box-shadow: 0 6px 18px rgba(11, 61, 40, 0.04); transition: 0.25s;
+    }
+    .mag-card:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(11, 61, 40, 0.09); }
+    .mag-card h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; color: var(--emerald-deep); margin: 6px 0; line-height: 1.25; }
+    .mag-card-meta { font-size: 0.76rem; color: var(--ink-muted); margin-bottom: 8px; }
+    .mag-card p { font-size: 0.86rem; color: var(--ink-dark); margin-bottom: 14px; }
+
+    /* VIDEO THUMBNAIL & LINK */
+    .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(305px, 1fr)); gap: 18px; margin-top: 14px; }
+    .video-card {
+      background: #ffffff; border-radius: 14px; overflow: hidden;
+      border: 1px solid rgba(19, 88, 60, 0.18); box-shadow: 0 6px 18px rgba(11, 61, 40, 0.05);
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .video-thumb-wrap {
+      position: relative; width: 100%; padding-bottom: 56.25%;
+      background: linear-gradient(135deg, #07291b, #13583c); overflow: hidden; display: block;
+    }
+    .video-thumb-wrap img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;
+    }
+    .video-card:hover .video-thumb-wrap img { transform: scale(1.04); }
+    .video-play-badge {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 54px; height: 54px; border-radius: 50%;
+      background: rgba(197, 155, 39, 0.94); color: #07291b;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; font-weight: 800; box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    }
+    .video-duration-tag {
+      position: absolute; bottom: 10px; right: 10px;
+      background: rgba(7, 41, 27, 0.88); color: #f5dc93;
+      padding: 3px 9px; border-radius: 6px; font-size: 0.74rem; font-weight: 700;
+    }
+    .video-body { padding: 16px 18px; }
+    .video-body h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.28rem; color: var(--emerald-deep); margin-bottom: 5px; }
+    .video-body p { font-size: 0.83rem; color: var(--ink-muted); margin-bottom: 12px; }
+
+    /* GALERI KHUSUS PHOTO & MODE ADMIN */
+    .admin-bar-strip {
+      display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;
+      background: #f4f8f6; border: 1px solid #cce3d8; border-radius: 12px;
+      padding: 12px 16px; margin-bottom: 16px;
+    }
+    .admin-only-el { display: none !important; }
+    body.portal-admin-unlocked .admin-only-el { display: inline-flex !important; }
+    body.portal-admin-unlocked .admin-only-block { display: block !important; }
+    .admin-only-block { display: none; }
+
+    .dropzone-galeri {
+      border: 2.5px dashed var(--gold-primary);
+      background: linear-gradient(135deg, #fffdf7 0%, #f4f9f6 100%);
+      border-radius: 14px; padding: 24px 20px; text-align: center;
+      margin-bottom: 16px; cursor: pointer; transition: all 0.25s ease;
+    }
+    .dropzone-galeri.dragover {
+      background: #e9f2ee; border-color: var(--emerald-deep); transform: scale(1.01);
+    }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-top: 14px; }
+    .gallery-card {
+      background: #ffffff; border-radius: 14px; overflow: hidden;
+      border: 1px solid #e2e8f0; box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+      display: flex; flex-direction: column;
+    }
+    .gallery-photo-box {
+      position: relative; width: 100%; height: 215px;
+      background: linear-gradient(135deg, #0b3d28, #13583c); overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .gallery-photo-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .gallery-year-pill {
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(7, 41, 27, 0.88); color: #f5dc93;
+      border: 1px solid var(--gold-primary); padding: 3px 10px; border-radius: 20px;
+      font-size: 0.74rem; font-weight: 700;
+    }
+    .gallery-caption { padding: 14px 16px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .gallery-caption h5 { font-size: 0.98rem; color: var(--emerald-deep); font-weight: 800; margin-bottom: 4px; }
+    .gallery-caption p { font-size: 0.82rem; color: var(--ink-muted); margin-bottom: 10px; }
+
+    /* FORM & KONFIRMASI */
+    .bank-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 16px 0; }
+    .bank-card {
+      background: linear-gradient(135deg, #f7fbf9 0%, #edf7f2 100%);
+      border: 1.5px solid rgba(19, 88, 60, 0.25); border-radius: 14px; padding: 18px 20px;
+    }
+    .bank-name { font-weight: 800; color: var(--emerald-deep); font-size: 1rem; margin-bottom: 4px; }
+    .bank-number { font-family: monospace; font-size: 1.2rem; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+    .bank-holder { font-size: 0.8rem; color: var(--ink-muted); margin-bottom: 10px; }
+
+    .form-box {
+      background: #fdfdfc; border: 1.5px solid var(--border-subtle);
+      border-radius: 14px; padding: 22px; margin-top: 16px;
+    }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--emerald-deep); margin-bottom: 5px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 9px;
+      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.88rem;
+    }
+
+    .cloud-status-pill {
+      font-size: 0.75rem; font-weight: 700; padding: 4px 11px; border-radius: 20px;
+      background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;
+    }
+
+    @media (max-width: 860px) { .mag-columns { column-count: 1; } }
+    @media (max-width: 768px) {
+      .kop-container { flex-direction: column; text-align: center; gap: 14px; }
+      .kop-info { text-align: center; }
+      .kop-logo { width: 96px; height: 96px; }
+      .mobile-btn { display: block; }
+      ul.nav-menu { display: none; flex-direction: column; width: 100%; padding-bottom: 10px; }
+      ul.nav-menu.open { display: flex; }
+      ul.nav-menu > li { width: 100%; justify-content: center; }
+      ul.nav-menu > li > a { width: 92%; }
+      ul.sub-kajian { position: static; width: 92%; box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. BILAH ATAS: ARAHKAN BALIK KE WEBSITE INDUK (PEGAWAI & SANTRI) -->
+  <div class="top-bar">
+    <div class="top-bar-inner">
+      <div class="top-bar-group">
+        <a href="https://darulmuttaqien.my.id/" class="portal-pill-btn portal-pill-home">← Kembali ke Web Induk</a>
+        <span style="color:#f5dc93; font-weight:600;">Pustaka Dakwah &amp; Layanan Publik Yayasan Darul Muttaqien</span>
+      </div>
+      <div class="top-bar-group">
+        <a href="https://darulmuttaqien.my.id/" class="portal-pill-btn">🏛️ Portal Pegawai (Web Induk) ↗</a>
+        <a href="https://darulmuttaqien.my.id/" class="portal-pill-btn">🎓 Portal Santri (Web Induk) ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. HEADER KOP RESMI (IDENTIK DENGAN WEB INDUK + LOGO YAYASAN) -->
+  <header class="kop-header">
+    <div class="kop-container">
+      <div class="kop-logo">
+        <img src="data:image/png;base64,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" alt="Logo Yayasan Darul Muttaqien" />
+      </div>
+      <div class="kop-info">
+        <div class="kop-bismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</div>
+        <h1>YAYASAN DARUL MUTTAQIEN</h1>
+        <div class="kop-wilayah">DESA TALANG PANGERAN KECAMATAN TELUK GELAM KABUPATEN OGAN KOMERING ILIR SUMSEL</div>
+        <div class="kop-alamat">📍 Jl. Mesjid No. 110 Dusun II Desa Talang Pangeran, Kode Pos 30673 &nbsp;|&nbsp; 📞 No. HP: 0853-8227-9767</div>
+        <div class="kop-akte">Akte Notaris Emmy Natalia, S.H, Nomor : 21 Tanggal 16 Februari 2021</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 3. NAVIGASI UTAMA -->
+  <nav class="main-nav">
+    <div class="nav-inner">
+      <button type="button" class="mobile-btn" onclick="document.getElementById('navList').classList.toggle('open')">☰ Menu Pustaka &amp; Layanan Publik</button>
+      <ul class="nav-menu" id="navList">
+        <li><a href="https://darulmuttaqien.my.id/" id="nav-beranda">Beranda Induk</a></li>
+        <li>
+          <a href="javascript:void(0)" onclick="bukaHalaman('kajian')" id="nav-kajian" class="active-menu-item">Kajian ▾</a>
+          <ul class="sub-kajian">
+            <li><a href="javascript:void(0)" onclick="bukaHalaman('kajian', 'Akidah')">• Kajian Akidah</a></li>
+            <li><a href="javascript:void(0)" onclick="bukaHalaman('kajian', 'Fiqh')">• Kajian Fiqh</a></li>
+            <li><a href="javascript:void(0)" onclick="bukaHalaman('kajian', 'Akhlak')">• Kajian Akhlak</a></li>
+            <li><a href="javascript:void(0)" onclick="bukaHalaman('kajian', 'Tarikh')">• Kajian Tarikh</a></li>
+          </ul>
+        </li>
+        <li><a href="javascript:void(0)" onclick="bukaHalaman('khutbah')" id="nav-khutbah">Kumpulan Khutbah</a></li>
+        <li><a href="javascript:void(0)" onclick="bukaHalaman('artikel')" id="nav-artikel">Artikel</a></li>
+        <li><a href="javascript:void(0)" onclick="bukaHalaman('katalog')" id="nav-katalog">Katalog Dakwah</a></li>
+        <li><a href="javascript:void(0)" onclick="bukaHalaman('galeri')" id="nav-galeri">Galeri</a></li>
+        <li><a href="javascript:void(0)" onclick="bukaHalaman('video')" id="nav-video">Video</a></li>
+        <li><a href="javascript:void(0)" class="btn-donasi-nav" onclick="bukaHalaman('konfirmasi')" id="nav-konfirmasi">🤲 Donasi &amp; Konfirmasi</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- 4. AREA UTAMA -->
+  <div class="container">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+      <span class="cloud-status-pill" id="cloudSyncBadge">☁️ Database Google Sheets Terhubung</span>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <button type="button" class="pill-btn" id="btnGlobalAdminOpen" onclick="bukaModalPin()">🔒 Mode Admin (PIN)</button>
+        <button type="button" class="pill-btn admin-only-el" onclick="bukaPengaturanEndpoint()">⚙️ URL Apps Script</button>
+        <button type="button" class="btn-danger admin-only-el" onclick="kunciModeAdmin()">🔐 Kunci Admin</button>
+      </div>
+    </div>
+    <div class="viewer-panel" id="mainViewport"></div>
+  </div>
+
+  <!-- MODAL VERIFIKASI PIN ADMIN (SINKRON DENGAN WEB INDUK: 2828) -->
+  <div id="modalPinAdmin" onclick="if(event.target===this) tutupModalPin()" style="display:none; position:fixed; inset:0; background:rgba(7,41,27,0.68); z-index:999; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:#ffffff; border-radius:16px; border-top:4px solid #c59b27; max-width:400px; width:100%; padding:22px 24px; box-shadow:0 20px 42px rgba(0,0,0,0.28);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <h4 style="margin:0; font-size:1.08rem; font-weight:800; color:#0b3d28;">🔐 Verifikasi PIN Mode Admin</h4>
+        <button type="button" onclick="tutupModalPin()" style="background:none; border:none; font-size:1.2rem; font-weight:700; color:#64748b; cursor:pointer;">✕</button>
+      </div>
+      <p style="font-size:0.83rem; color:#5a6660; margin-bottom:14px;">Masukkan PIN admin yang sama dengan website induk untuk membuka fitur unggah/seret photo galeri, video &amp; kelola database.</p>
+      <input type="password" id="inputPinAdmin" placeholder="Masukkan PIN Admin..." onkeydown="if(event.key==='Enter'){ event.preventDefault(); verifikasiPinAdmin(); }" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:9px; font-size:1rem; font-weight:700; letter-spacing:2px; margin-bottom:10px;" />
+      <div id="errPinAdmin" style="display:none; font-size:0.78rem; color:#b91c1c; background:#fef2f2; border:1px solid #fecaca; padding:7px 10px; border-radius:8px; margin-bottom:10px; font-weight:600;"></div>
+      <div style="display:flex; justify-content:flex-end; gap:8px;">
+        <button type="button" class="pill-btn" onclick="tutupModalPin()">Batal</button>
+        <button type="button" class="btn-primary" onclick="verifikasiPinAdmin()">Buka Mode Admin ↗</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================================
+       KONFIGURASI TERPUSAT & DATABASE GOOGLE SHEETS
+       Spreadsheet ID: 1KJpDgOfLH2hnVH7-rxMEO8hRQ7QYW_nDt1ixIvsPb2Y
+       ========================================================================= */
+    var KONFIG_PORTAL = {
+      WEB_INDUK_URL: "https://darulmuttaqien.my.id/",
+      ADMIN_PIN: "2828",
+      SPREADSHEET_ID: "1KJpDgOfLH2hnVH7-rxMEO8hRQ7QYW_nDt1ixIvsPb2Y",
+      APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbz9TILiETzFrniKeDr7L0zu0Vmz4c-nIi0OrtI9k67AgFrYAZVMR3IOR0lktFLw2NWqzA/exec",
+      WA_LINK_PENGURUS_1: "https://wa.link/elpjgu",
+      WA_LINK_PENGURUS_2: "https://wa.link/jr2uzv",
+      WA_LINK_BENDAHARA: "https://wa.link/1wqjar",
+      NO_REK_BRI: "003001013416538",
+      NO_REK_BSI: "7185368879",
+      SESSION_ADMIN_KEY: "ydm_pelengkap_admin_unlocked",
+      GALERI_STORAGE_KEY: "ydm_pelengkap_galeri_v2",
+      VIDEO_STORAGE_KEY: "ydm_pelengkap_video_v2",
+      ENDPOINT_STORAGE_KEY: "ydm_pelengkap_gas_url"
+    };
+
+    function getEndpointUrl() {
+      return localStorage.getItem(KONFIG_PORTAL.ENDPOINT_STORAGE_KEY) || KONFIG_PORTAL.APPS_SCRIPT_URL || "";
+    }
+
+    function bukaPengaturanEndpoint() {
+      if (!isAdminUnlocked()) { bukaModalPin(); return; }
+      var saatIni = getEndpointUrl();
+      var baru = prompt("Tempel URL Web App Google Apps Script Anda (akhiran /exec):", saatIni);
+      if (baru !== null) {
+        localStorage.setItem(KONFIG_PORTAL.ENDPOINT_STORAGE_KEY, baru.trim());
+        sinkronDatabaseCloud(true);
+      }
+    }
+
+    /* KONVERSI OTOMATIS LINK GOOGLE DRIVE KE THUMBNAIL AGAR TAMPIL MULUS DI WEBSITE */
+    function konversiLinkDriveKeGambar(rawUrl) {
+      if (!rawUrl) return "";
+      var s = String(rawUrl).trim();
+      if (s.indexOf("data:image/") === 0) return s;
+      var match = s.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || s.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) {
+        return "https://drive.google.com/thumbnail?id=" + match[1] + "&sz=w1200";
+      }
+      return s;
+    }
+
+    function fallbackDriveImg(imgEl, originalUrl) {
+      if (!imgEl || imgEl.dataset.retried === "1") return;
+      imgEl.dataset.retried = "1";
+      var match = String(originalUrl || "").match(/(?:\/file\/d\/|[?&]id=)([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) {
+        imgEl.src = "https://lh3.googleusercontent.com/d/" + match[1] + "=w1200";
+      }
+    }
+
+    var DATA_KAJIAN = [
+      {
+        id: "kaj-1",
+        kategori: "Akidah",
+        kitab: "Aqidatul Awam & Jauharut Tauhid",
+        judul: "Memperkokoh Tauhid: Mengenal Sifat Wajib bagi Allah SWT",
+        edisi: "Edisi Majalah 01 • Rubrik Ushuluddin",
+        lead: "Mengenal Allah SWT dengan keyakinan yang kokoh merupakan kewajiban pertama bagi setiap mukallaf sekaligus akar seluruh amal ibadah.",
+        arab: "فَأَوَّلُ وَاجِبٍ عَلَى الْعِبَادِ ۞ مَعْرِفَةُ الْإِلٰهِ بِاسْتِقْصَاءِ",
+        kutipan: "Tauhid yang lurus melahirkan ketenangan jiwa dan membebaskan manusia dari ketergantungan kepada selain Allah.",
+        paragraf: [
+          "Dalam tradisi keilmuan Ahlussunnah wal Jamaah, pembahasan akidah diawali dengan mengenalkan sifat-sifat kesempurnaan Allah SWT melalui dalil naqli (Al-Qur'an dan Hadits) maupun dalil aqli yang mudah dicerna oleh para penuntut ilmu.",
+          "Dua puluh sifat wajib bagi Allah—dimulai dari Wujud, Qidam, Baqa', hingga Mukhalafatuhu lil Hawaditsi—menanamkan kesadaran mendalam bahwa tiada satu pun makhluk yang menyerupai-Nya.",
+          "Santri dan jamaah dibimbing memahami makna setiap sifat agar keimanan tidak sekadar hafalan lisan, tetapi meresap menjadi keteguhan sikap dalam kehidupan sehari-hari."
+        ]
+      },
+      {
+        id: "kaj-2",
+        kategori: "Fiqh",
+        kitab: "Safinatun Najah & Fathul Qarib",
+        judul: "Fikih Thaharah: Kunci Diterimanya Shalat & Kesempurnaan Wudhu",
+        edisi: "Edisi Majalah 02 • Rubrik Fikih Ibadah",
+        lead: "Kesucian lahir dan batin adalah pintu gerbang munajat seorang hamba ketika berdiri menghadap Rabb-nya dalam shalat.",
+        arab: "مِفْتَاحُ الصَّلَاةِ الطُّهُورُ، وَتَحْرِيمُهَا التَّكْبِيرُ، وَتَحْلِيلُهَا التَّسْلِيمُ",
+        kutipan: "Fikih bukan sekadar hafalan hukum, melainkan panduan praktis agar setiap gerakan ibadah sah sesuai tuntunan syariat.",
+        paragraf: [
+          "Kitab Safinatun Najah karya Syekh Salim bin Sumair Al-Hadhrami menjadi rujukan utama dalam memahami tata cara bersuci (thaharah) secara sistematis, mulai dari pembagian macam-macam air hingga enam rukun fardhu wudhu.",
+          "Setiap rukun wudhu—niat, membasuh wajah, membasuh kedua tangan hingga siku, mengusap sebagian kepala, membasuh kedua kaki hingga mata kaki, serta tertib—dipraktikkan secara berkesinambungan.",
+          "Dengan pemahaman thaharah yang benar, kualitas ibadah harian keluarga muslim semakin terjaga dan penuh kekhusyukan."
+        ]
+      },
+      {
+        id: "kaj-3",
+        kategori: "Akhlak",
+        kitab: "Ta'limul Muta'allim & Al-Washaya",
+        judul: "Adab Penuntut Ilmu: Memuliakan Guru sebagai Kunci Keberkahan",
+        edisi: "Edisi Majalah 03 • Rubrik Tazkiyatun Nafs",
+        lead: "Ilmu yang bermanfaat tidak diraih semata-mata dengan kecerdasan akal, melainkan melalui ketinggian adab dan ketulusan hati.",
+        arab: "تَعَلَّمُوا الْعِلْمَ وَتَعَلَّمُوا لِلْعِلْمِ السَّكِينَةَ وَالْوَقَارَ",
+        kutipan: "Adab didahulukan sebelum ilmu; sebab dengan adab, ilmu yang sedikit akan tumbuh membawa cahaya manfaat.",
+        paragraf: [
+          "Imam Az-Zarnuji dalam kitab Ta'limul Muta'allim menegaskan bahwa seorang pelajar tidak akan memperoleh ilmu dan mengambil manfaat darinya kecuali dengan mengagungkan ilmu, ahli ilmu, serta menghormati gurunya.",
+          "Sikap santun kepada guru, duduk tenang saat majelis berlangsung, menjaga kebersihan kitab, serta memohon doa restu orang tua adalah amalan nyata pembuka pintu keberkahan ilmu."
+        ]
+      },
+      {
+        id: "kaj-4",
+        kategori: "Tarikh",
+        kitab: "Khulashah Nurul Yaqin",
+        judul: "Cahaya Dakwah di Makkah: Keteladanan Kesabaran Rasulullah ﷺ",
+        edisi: "Edisi Majalah 04 • Rubrik Sirah Nabawiyah",
+        lead: "Menelusuri jejak perjuangan Rasulullah ﷺ menghidupkan rasa cinta (mahabbah) dan keteladanan nyata dalam jiwa umat.",
+        arab: "لَقَدْ كَانَ لَكُمْ فِي رَسُولِ اللَّهِ أُسْوَةٌ حَسَنَةٌ",
+        kutipan: "Sejarah bukan sekadar kisah masa lalu, melainkan cermin penuntun langkah umat di masa kini dan masa depan.",
+        paragraf: [
+          "Melalui kitab Khulashah Nurul Yaqin karya Syekh Umar Abdul Jabbar, kita meneladani perjalanan hidup Nabi Muhammad ﷺ sejak kelahiran beliau di Makkah hingga turunnya wahyu pertama di Gua Hira.",
+          "Keteguhan hati Rasulullah ﷺ bersama para sahabat dalam menghadapi ujian dakwah periode Makkah menjadi pelajaran abadi tentang kesabaran, kejujuran, dan amanah."
+        ]
+      }
+    ];
+
+    var DATA_KHUTBAH = [
+      {
+        id: "khu-1",
+        judul: "Khutbah Jumat: Keutamaan Menjaga Lisan dan Menunaikan Amanah",
+        khatib: "Dewan Asatidz Yayasan Darul Muttaqien",
+        tanggal: "Mimbar Jumat • Siap Cetak 2 Kolom Landscape",
+        salamArab: "اَلْحَمْدُ لِلّٰهِ الَّذِيْ أَمَرَنَا بِالصِّدْقِ وَالْأَمَانَةِ، وَنَهَانَا عَنِ الْكَذِبِ وَالْخِيَانَةِ. أَشْهَدُ أَنْ لَا إِلٰهَ إِلَّا اللّٰهُ وَحْدَهُ لَا شَرِيْكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُوْلُهُ.",
+        dalilArab: "يَا أَيُّهَا الَّذِينَ آمَنُوا اتَّقُوا اللَّهَ وَقُولُوا قَوْلًا سَدِيدًا ﴿٧٠﴾ يُصْلِحْ لَكُمْ أَعْمَالَكُمْ وَيَغْفِرْ لَكُمْ ذُنُوبَكُمْ",
+        doaArab: "اَللّٰهُمَّ اغْفِرْ لِلْمُؤْمِنِيْنَ وَالْمُؤْمِنَاتِ وَالْمُسْلِمِيْنَ وَالْمُسْلِمَاتِ، اَلْأَحْيَاءِ مِنْهُمْ وَالْمْوَاتِ، رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ.",
+        paragraf: [
+          "Ma'asyiral Muslimin rahimakumullah, marilah kita senantiasa meningkatkan ketakwaan kepada Allah SWT dengan menjalankan segala perintah-Nya dan menjauhi seluruh larangan-Nya.",
+          "Salah satu cerminan utama kesempurnaan iman seorang mukmin adalah kemampuannya menjaga lisan dari perkataan dusta, ghibah, adu domba, serta ucapan yang menyakiti hati sesama.",
+          "Rasulullah ﷺ mengingatkan bahwa keselamatan manusia sangat bergantung pada bagaimana ia menjaga lisannya. Setiap kata yang terucap dicatat dan akan dimintai pertanggungjawaban di hadapan Allah SWT.",
+          "Di samping menjaga lisan, menunaikan amanah dalam keluarga, pekerjaan, maupun pendidikan anak-anak merupakan tiang tegaknya keberkahan masyarakat."
+        ]
+      },
+      {
+        id: "khu-2",
+        judul: "Khutbah Jumat: Mendidik Generasi Qur'ani di Era Digital",
+        khatib: "Mimbar Jumat Masjid Talang Pangeran",
+        tanggal: "Mimbar Jumat • Siap Cetak 2 Kolom Landscape",
+        salamArab: "اَلْحَمْدُ لِلّٰهِ الَّذِيْ عَلَّمَ بِالْقَلَمِ، عَلَّمَ الْإِنْسَانَ مَا لَمْ يَعْلَمْ. وَالصَّلَاةُ وَالسَّلَامُ عَلٰى سَيِّدِنَا مُحَمَّدٍ خَيْرِ الْأَنَامِ، وَعَلٰى آلِهِ وَصَحْبِهِ الْكِرَامِ.",
+        dalilArab: "يَا أَيُّهَا الَّذِينَ آمَنُوا قُوا أَنفُسَكُمْ وَأَهْلِيكُمْ نَارًا وَقُودُهَا النَّاسُ وَالْحِجَارَةُ",
+        doaArab: "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا. اَللّٰهُمَّ اجْعَلْ أَوْلَادَنَا مِنْ أَهْلِ الْعِلْمِ وَأَهْلِ الْقُرْآنِ.",
+        paragraf: [
+          "Sidang Jumat yang dimuliakan Allah, anak-anak kita adalah amanah agung dari Allah SWT yang kelak menjadi penyejuk pandangan mata sekaligus investasi amal jariyah bagi kedua orang tuanya.",
+          "Di tengah derasnya arus informasi digital saat ini, membekali putra-putri kita dengan bacaan Al-Qur'an yang fasih, pemahaman akidah yang lurus, dan akhlakul karimah merupakan benteng paling kokoh.",
+          "Mari kita dukung penuh langkah generasi muda dalam menuntut ilmu agama, mendampingi hafalan mereka di rumah, serta memuliakan para guru yang membimbing mereka dengan penuh kesabaran."
+        ]
+      }
+    ];
+
+    var DATA_ARTIKEL = [
+      {
+        id: "art-1",
+        rubrik: "Rubrik Pendidikan & Keilmuan",
+        judul: "Adab Bermajelis Ilmu Menurut Imam Al-Ghazali",
+        penulis: "Redaksi Yayasan Darul Muttaqien",
+        tanggal: "November 2026",
+        lead: "Dalam kitab Bidayatul Hidayah, Imam Al-Ghazali merinci adab lahir dan batin seorang penuntut ilmu agar majelisnya dipenuhi ketenangan dan cahaya hikmah.",
+        arab: "إِنَّمَا يَنَالُ الْعِلْمَ مَنْ عَظَّمَهُ وَعَظَّمَ أَهْلَهُ",
+        kutipan: "Hati yang bersih dari kesombongan ibarat tanah subur yang siap menumbuhkan benih ilmu menjadi amal saleh.",
+        paragraf: [
+          "Menghadiri majelis ilmu bukan sekadar rutinitas mendengarkan ceramah, melainkan ibadah agung yang dinaungi sayap para malaikat.",
+          "Imam Al-Ghazali menekankan pentingnya meluruskan niat semata-mata mencari ridha Allah, mendahului dengan salam, duduk dengan tawadhu, serta tidak memotong pembicaraan guru.",
+          "Ketika adab-adab tersebut dijaga, suasana majelis menjadi sejuk dan ilmu yang disampaikan mudah dipahami serta diamalkan."
+        ]
+      },
+      {
+        id: "art-2",
+        rubrik: "Rubrik Sosial & Keumatan",
+        judul: "Keberkahan Sedekah Jariyah untuk Pendidikan & Dakwah",
+        penulis: "Dewan Pengurus Yayasan",
+        tanggal: "November 2026",
+        lead: "Harta yang diinfakkan untuk mendukung majelis ilmu dan pembinaan generasi Qur'ani akan terus mengalirkan pahala bahkan setelah seseorang wafat.",
+        arab: "إِذَا مَاتَ الْإِنْسَانُ انْقَطَعَ عَنْهُ عَمَلُهُ إِلَّا مِنْ ثَلَاثَةٍ: إِلَّا مِنْ صَدَقَةٍ جَارِيَةٍ، أَوْ عِلْمٍ يُنْتَفَعُ بِهِ، أَوْ وَلَدٍ صَالِحٍ يَدْعُو لَهُ",
+        kutipan: "Setiap huruf Al-Qur'an yang dibaca oleh para penuntut ilmu menjadi saksi kebaikan bagi para dermawan yang memfasilitasinya.",
+        paragraf: [
+          "Sinergi antara ulama, pendidik, dan para dermawan merupakan pilar utama keberlangsungan lembaga dakwah dan pendidikan Islam di tengah masyarakat.",
+          "Melalui dukungan wakaf kitab, sarana belajar, dan infaq operasional dakwah, masyarakat turut menanam benih kebaikan yang manfaatnya dirasakan lintas generasi."
+        ]
+      }
+    ];
+
+    var DATA_KATALOG = [
+      {
+        id: "kat-1",
+        kode: "KAT-01",
+        kategori: "Modul Tahsin & Al-Qur'an",
+        judul: "Panduan Praktis Makharijul Huruf & Tajwid Dasar",
+        penyusun: "Tim Pengajar Al-Qur'an Darul Muttaqien",
+        deskripsi: "Buku saku sistematis berisi makhraj huruf hijaiyah, hukum nun sukun/tanwin, mad, dan latihan bacaan tartil untuk pemula hingga lanjutan.",
+        info: "Tersedia Cetak & Edisi Digital • Rujukan Majelis Taklim"
+      },
+      {
+        id: "kat-2",
+        kode: "KAT-02",
+        kategori: "Kitab Turats & Terjemah",
+        judul: "Ringkasan Matan Safinatun Najah & Fikih Shalat",
+        penyusun: "Divisi Kurikulum & Dakwah",
+        deskripsi: "Dilengkapi bagan rukun wudhu, syarat sah shalat, dzikir ba'da shalat, serta tanya jawab masalah ibadah sehari-hari.",
+        info: "Edisi Majalah Dakwah • Rujukan Kajian Mingguan"
+      },
+      {
+        id: "kat-3",
+        kode: "KAT-03",
+        kategori: "Kumpulan Doa & Wirid",
+        judul: "Buku Saku Ratib, Dzikir Pagi Petang & Doa Harian",
+        penyusun: "Yayasan Darul Muttaqien Talang Pangeran",
+        deskripsi: "Kompilasi wirid ma'tsurat, doa-doa pilihan dari Al-Qur'an dan Hadits shahih untuk diamalkan di rumah maupun majelis.",
+        info: "Siap Cetak & Distribusi Jamaah"
+      }
+    ];
+
+    var VIDEO_DEFAULT = [
+      {
+        id: "vid-1",
+        judul: "Kajian Kitab Safinatun Najah — Bab Thaharah & Wudhu",
+        kategori: "Kajian Fiqh",
+        durasi: "24:15",
+        deskripsi: "Rekaman kajian rutin bersama Dewan Asatidz Yayasan Darul Muttaqien Talang Pangeran.",
+        thumbUrl: "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+        videoUrl: "https://www.youtube.com/@YayasanDarulMuttaqienOKI"
+      },
+      {
+        id: "vid-2",
+        judul: "Dokumentasi Pengajian Akbar & Santunan Santri",
+        kategori: "Kegiatan Yayasan",
+        durasi: "18:40",
+        deskripsi: "Rangkaian acara majelis taklim bersama jamaah dan masyarakat Kecamatan Teluk Gelam, OKI.",
+        thumbUrl: "https://img.youtube.com/vi/aqz-KE-bpKQ/hqdefault.jpg",
+        videoUrl: "https://www.youtube.com/@YayasanDarulMuttaqienOKI"
+      },
+      {
+        id: "vid-3",
+        judul: "Murottal & Setoran Hafalan Juz 'Amma Majelis Qur'an",
+        kategori: "Tilawah & Tahfidz",
+        durasi: "12:08",
+        deskripsi: "Pembinaan bacaan Al-Qur'an tartil dan setoran hafalan surat-surat pendek.",
+        thumbUrl: "https://img.youtube.com/vi/ysz5S6PUM-U/hqdefault.jpg",
+        videoUrl: "https://www.youtube.com/@YayasanDarulMuttaqienOKI"
+      }
+    ];
+
+    var GALERI_DEFAULT = [
+      {
+        id: "gal-1",
+        judul: "Majelis Kajian Kitab Kuning Mingguan",
+        tahun: "2026",
+        keterangan: "Dokumentasi kegiatan kajian rutin jamaah dan pengurus Yayasan Darul Muttaqien.",
+        src: ""
+      },
+      {
+        id: "gal-2",
+        judul: "Pengajian Akbar & Silaturahmi Jamaah",
+        tahun: "2025",
+        keterangan: "Kebersamaan jamaah di Masjid Desa Talang Pangeran, Teluk Gelam, OKI.",
+        src: ""
+      },
+      {
+        id: "gal-3",
+        judul: "Bakti Sosial & Penyaluran Infaq Pendidikan",
+        tahun: "2024",
+        keterangan: "Penyerahan bantuan kitab dan perlengkapan belajar dari para donatur.",
+        src: ""
+      }
+    ];
+
+    function isAdminUnlocked() {
+      try {
+        return sessionStorage.getItem(KONFIG_PORTAL.SESSION_ADMIN_KEY) === "true";
+      } catch (e) {
+        return document.body.classList.contains("portal-admin-unlocked");
+      }
+    }
+
+    function applyAdminUI() {
+      var btnOpen = document.getElementById("btnGlobalAdminOpen");
+      if (isAdminUnlocked()) {
+        document.body.classList.add("portal-admin-unlocked");
+        if (btnOpen) btnOpen.style.display = "none";
+      } else {
+        document.body.classList.remove("portal-admin-unlocked");
+        if (btnOpen) btnOpen.style.display = "inline-flex";
+      }
+    }
+
+    function bukaModalPin() {
+      var m = document.getElementById("modalPinAdmin");
+      var inp = document.getElementById("inputPinAdmin");
+      var err = document.getElementById("errPinAdmin");
+      if (err) { err.style.display = "none"; err.textContent = ""; }
+      if (m) m.style.display = "flex";
+      if (inp) { inp.value = ""; setTimeout(function() { inp.focus(); }, 60); }
+    }
+
+    function tutupModalPin() {
+      var m = document.getElementById("modalPinAdmin");
+      if (m) m.style.display = "none";
+    }
+
+    function verifikasiPinAdmin() {
+      var inp = document.getElementById("inputPinAdmin");
+      var err = document.getElementById("errPinAdmin");
+      var val = inp ? inp.value.trim() : "";
+      if (val !== KONFIG_PORTAL.ADMIN_PIN) {
+        if (err) {
+          err.textContent = "PIN admin tidak sesuai. Gunakan PIN yang sama dengan website induk.";
+          err.style.display = "block";
+        }
+        return;
+      }
+      try { sessionStorage.setItem(KONFIG_PORTAL.SESSION_ADMIN_KEY, "true"); } catch (e) {}
+      tutupModalPin();
+      applyAdminUI();
+      var activeNav = document.querySelector("ul.nav-menu > li > a.active-menu-item");
+      var targetTab = activeNav ? activeNav.id.replace("nav-", "") : "galeri";
+      bukaHalaman(targetTab === "beranda" ? "galeri" : targetTab);
+    }
+
+    function kunciModeAdmin() {
+      try { sessionStorage.removeItem(KONFIG_PORTAL.SESSION_ADMIN_KEY); } catch (e) {}
+      applyAdminUI();
+      var activeNav = document.querySelector("ul.nav-menu > li > a.active-menu-item");
+      var targetTab = activeNav ? activeNav.id.replace("nav-", "") : "galeri";
+      bukaHalaman(targetTab === "beranda" ? "galeri" : targetTab);
+    }
+
+    /* SINKRONISASI CLOUD GOOGLE SHEETS */
+    function sinkronDatabaseCloud(showAlert) {
+      var badge = document.getElementById("cloudSyncBadge");
+      var url = getEndpointUrl();
+      if (!url) {
+        if (badge) badge.textContent = "📄 Sheet ID: " + KONFIG_PORTAL.SPREADSHEET_ID.slice(0, 12) + "... (Setel URL /exec di Mode Admin)";
+        return;
+      }
+      if (badge) badge.textContent = "⏳ Menyinkronkan Google Sheets...";
+      fetch(url + (url.indexOf("?") === -1 ? "?action=getAll" : "&action=getAll") + "&_t=" + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(res) {
+          if (res && res.status === "success") {
+            if (Array.isArray(res.galeri) && res.galeri.length > 0) {
+              simpanDaftarGaleri(res.galeri);
+            }
+            if (Array.isArray(res.video) && res.video.length > 0) {
+              simpanDaftarVideo(res.video);
+            }
+            if (badge) badge.textContent = "✅ Tersinkron dengan Google Sheets";
+            if (showAlert) alert("Sinkronisasi database Google Sheets berhasil!");
+            var activeNav = document.querySelector("ul.nav-menu > li > a.active-menu-item");
+            var targetTab = activeNav ? activeNav.id.replace("nav-", "") : "kajian";
+            bukaHalaman(targetTab === "beranda" ? "kajian" : targetTab);
+          }
+        })
+        .catch(function() {
+          if (badge) badge.textContent = "⚠️ Mode Offline / Lokal (Periksa URL Apps Script)";
+        });
+    }
+
+    function kirimKeAppsScript(payload, onDone) {
+      var url = getEndpointUrl();
+      if (!url) {
+        if (typeof onDone === "function") onDone(null);
+        return;
+      }
+      fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(res) { if (typeof onDone === "function") onDone(res); })
+      .catch(function() { if (typeof onDone === "function") onDone(null); });
+    }
+
+    /* MANAJEMEN GALERI PHOTO (IMPORT & DRAG-DROP + KONVERSI LINK DRIVE) */
+    function ambilDaftarGaleri() {
+      try {
+        var raw = localStorage.getItem(KONFIG_PORTAL.GALERI_STORAGE_KEY);
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (e) {}
+      return GALERI_DEFAULT.slice();
+    }
+
+    function simpanDaftarGaleri(list) {
+      try {
+        localStorage.setItem(KONFIG_PORTAL.GALERI_STORAGE_KEY, JSON.stringify(list));
+      } catch (e) {}
+    }
+
+    function tambahPhotoViaLinkDrive() {
+      if (!isAdminUnlocked()) { bukaModalPin(); return; }
+      var rawLink = document.getElementById("inputLinkDriveGaleri").value.trim();
+      var judul = document.getElementById("inputJudulLinkGaleri").value.trim() || "Dokumentasi Kegiatan";
+      var tahun = document.getElementById("inputTahunFotoGaleri").value.trim() || String(new Date().getFullYear());
+      var ket = document.getElementById("inputKetFotoGaleri").value.trim() || "Dokumentasi Photo Yayasan Darul Muttaqien";
+
+      if (!rawLink) {
+        alert("Tempel link foto Google Drive terlebih dahulu.");
+        return;
+      }
+
+      var convertedSrc = konversiLinkDriveKeGambar(rawLink);
+      var daftar = ambilDaftarGaleri();
+      daftar.unshift({
+        id: "gal-" + Date.now(),
+        judul: judul,
+        tahun: tahun,
+        keterangan: ket,
+        linkAsli: rawLink,
+        src: convertedSrc
+      });
+      simpanDaftarGaleri(daftar);
+      renderGridGaleri();
+
+      kirimKeAppsScript({
+        action: "addGaleriLink",
+        pin: KONFIG_PORTAL.ADMIN_PIN,
+        judul: judul,
+        tahun: tahun,
+        keterangan: ket,
+        link: rawLink
+      });
+
+      document.getElementById("inputLinkDriveGaleri").value = "";
+      document.getElementById("inputJudulLinkGaleri").value = "";
+    }
+
+    function prosesFileFotoGaleri(fileList) {
+      if (!isAdminUnlocked()) { bukaModalPin(); return; }
+      if (!fileList || fileList.length === 0) return;
+      var daftar = ambilDaftarGaleri();
+      var tahunInput = document.getElementById("inputTahunFotoGaleri");
+      var ketInput = document.getElementById("inputKetFotoGaleri");
+      var tahunVal = (tahunInput && tahunInput.value.trim()) ? tahunInput.value.trim() : String(new Date().getFullYear());
+      var ketVal = (ketInput && ketInput.value.trim()) ? ketInput.value.trim() : "Dokumentasi Foto Yayasan Darul Muttaqien";
+
+      var files = Array.prototype.slice.call(fileList).filter(function(f) {
+        return f.type && f.type.indexOf("image/") === 0;
+      });
+      if (files.length === 0) {
+        alert("Pilih atau seret file gambar (JPG, PNG, WEBP).");
+        return;
+      }
+
+      var selesai = 0;
+      files.forEach(function(file) {
+        var reader = new FileReader();
+        reader.onload = function(ev) {
+          var judulBersih = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]+/g, " ");
+          var dataUrl = ev.target.result;
+          var itemBaru = {
+            id: "gal-" + Date.now() + "-" + Math.floor(Math.random() * 1000),
+            judul: judulBersih || "Foto Kegiatan Yayasan",
+            tahun: tahunVal,
+            keterangan: ketVal,
+            src: dataUrl
+          };
+          daftar.unshift(itemBaru);
+
+          kirimKeAppsScript({
+            action: "uploadGaleriPhoto",
+            pin: KONFIG_PORTAL.ADMIN_PIN,
+            judul: itemBaru.judul,
+            tahun: tahunVal,
+            keterangan: ketVal,
+            fileName: file.name,
+            mimeType: file.type,
+            base64: dataUrl
+          }, function(res) {
+            if (res && res.status === "success" && res.item) {
+              itemBaru.id = res.item.id;
+              itemBaru.src = res.item.src;
+              simpanDaftarGaleri(daftar);
+              renderGridGaleri();
+            }
+          });
+
+          selesai++;
+          if (selesai === files.length) {
+            simpanDaftarGaleri(daftar);
+            renderGridGaleri();
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function hapusFotoGaleri(idFoto) {
+      if (!isAdminUnlocked()) { bukaModalPin(); return; }
+      if (!confirm("Hapus foto ini dari galeri?")) return;
+      var daftar = ambilDaftarGaleri().filter(function(g) { return g.id !== idFoto; });
+      simpanDaftarGaleri(daftar);
+      renderGridGaleri();
+      kirimKeAppsScript({
+        action: "deleteRow",
+        pin: KONFIG_PORTAL.ADMIN_PIN,
+        sheetName: "Galeri_Foto",
+        id: idFoto
+      });
+    }
+
+    function renderGridGaleri() {
+      var grid = document.getElementById("galeriPhotoGrid");
+      if (!grid) return;
+      var daftar = ambilDaftarGaleri();
+      grid.innerHTML = daftar.map(function(g) {
+        var cleanSrc = konversiLinkDriveKeGambar(g.src);
+        var imgHtml = cleanSrc
+          ? '<img src="' + cleanSrc + '" alt="' + g.judul + '" onerror="fallbackDriveImg(this, \'' + cleanSrc + '\')" />'
+          : '<div style="color:#f5dc93; font-weight:700; text-align:center; padding:16px;">📷 ' + g.judul + '<br><span style="font-size:0.75rem; font-weight:500;">(Unggah atau tempel link photo di Mode Admin)</span></div>';
+        return '<div class="gallery-card">' +
+          '<div class="gallery-photo-box">' + imgHtml + '<span class="gallery-year-pill">📅 ' + g.tahun + '</span></div>' +
+          '<div class="gallery-caption">' +
+            '<div><h5>' + g.judul + '</h5><p>' + g.keterangan + '</p></div>' +
+            '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+              '<span style="font-size:0.74rem; color:var(--emerald-mid); font-weight:700;">🖼️ Galeri Photo</span>' +
+              '<button type="button" class="btn-danger admin-only-el" onclick="hapusFotoGaleri(\'' + g.id + '\')">🗑️ Hapus</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+    }
+
+    /* MANAJEMEN VIDEO THUMBNAIL + LINK (MODE ADMIN) */
+    function ambilDaftarVideo() {
+      try {
+        var raw = localStorage.getItem(KONFIG_PORTAL.VIDEO_STORAGE_KEY);
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (e) {}
+      return VIDEO_DEFAULT.slice();
+    }
+
+    function simpanDaftarVideo(list) {
+      localStorage.setItem(KONFIG_PORTAL.VIDEO_STORAGE_KEY, JSON.stringify(list));
+    }
+
+    function tambahVideoBaru() {
+      if (!isAdminUnlocked()) { bukaModalPin(); return; }
+      var judul = document.getElementById("vidJudulInput").value.trim();
+      var link = document.getElementById("vidLinkInput").value.trim();
+      var thumb = document.getElementById("vidThumbInput").value.trim();
+      var durasi = document.getElementById("vidDurasiInput").value.trim() || "15:00";
+      var kat = document.getElementById("vidKatInput").value.trim() || "Kajian & Dakwah";
+      var desk = document.getElementById("vidDeskInput").value.trim() || "Dokumentasi video resmi Yayasan Darul Muttaqien.";
+
+      if (!judul || !link) {
+        alert("Isi Judul Video dan Tautan (Link) Video terlebih dahulu.");
+        return;
+      }
+
+      if (!thumb) {
+        var ytMatch = link.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+        thumb = ytMatch
+          ? ("https://img.youtube.com/vi/" + ytMatch[1] + "/hqdefault.jpg")
+          : "https://img.youtube.com/vi/aqz-KE-bpKQ/hqdefault.jpg";
+      } else {
+        thumb = konversiLinkDriveKeGambar(thumb);
+      }
+
+      var daftar = ambilDaftarVideo();
+      var idVid = "vid-" + Date.now();
+      daftar.unshift({
+        id: idVid,
+        judul: judul,
+        kategori: kat,
+        durasi: durasi,
+        deskripsi: desk,
+        thumbUrl: thumb,
+        videoUrl: link
+      });
+      simpanDaftarVideo(daftar);
+
+      kirimKeAppsScript({
+        action: "addVideo",
+        pin: KONFIG_PORTAL.ADMIN_PIN,
+        judul: judul,
+        kategori: kat,
+        durasi: durasi,
+        deskripsi: desk,
+        thumbUrl: thumb,
+        videoUrl: link
+      });
+
+      bukaHalaman("video");
+    }
+
+    function hapusVideoItem(idVid) {
+      if (!isAdminUnlocked()) { bukaModalPin(); return; }
+      if (!confirm("Hapus video ini dari daftar?")) return;
+      var daftar = ambilDaftarVideo().filter(function(v) { return v.id !== idVid; });
+      simpanDaftarVideo(daftar);
+      bukaHalaman("video");
+      kirimKeAppsScript({
+        action: "deleteRow",
+        pin: KONFIG_PORTAL.ADMIN_PIN,
+        sheetName: "Kumpulan_Video",
+        id: idVid
+      });
+    }
+
+    /* CETAK KHUTBAH 2 KOLOM LANDSCAPE (FONT ARAB 20PT) */
+    function cetakKhutbahLandscape(idKhutbah) {
+      var k = DATA_KHUTBAH.find(function(x) { return x.id === idKhutbah; });
+      if (!k) return;
+      var paragrafHtml = k.paragraf.map(function(p) { return "<p>" + p + "</p>"; }).join("");
+      var w = window.open("", "_blank", "width=1100,height=720");
+      if (!w) { alert("Izinkan pop-up browser untuk mencetak khutbah 2 kolom landscape."); return; }
+      w.document.write(
+        '<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8" />' +
+        '<title>Cetak Khutbah 2 Kolom Landscape - ' + k.judul + '</title>' +
+        '<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">' +
+        '<style>' +
+          '@page { size: 330mm 215mm; margin: 14mm 16mm; }' +
+          'body { font-family: "Plus Jakarta Sans", Arial, sans-serif; color: #111827; margin: 0; padding: 0; }' +
+          '.kop-cetak { text-align: center; border-bottom: 2px solid #0b3d28; padding-bottom: 8px; margin-bottom: 14px; }' +
+          '.kop-cetak h2 { margin: 0 0 4px 0; font-size: 16pt; color: #0b3d28; }' +
+          '.kop-cetak .sub { font-size: 9.5pt; color: #4b5563; }' +
+          '.kolom-ganda { column-count: 2; column-gap: 14mm; column-rule: 1px solid #9ca3af; text-align: justify; }' +
+          '.kolom-ganda p { font-size: 11pt; line-height: 1.65; margin: 0 0 10px 0; }' +
+          '.arab-20pt { font-family: "Amiri", "Traditional Arabic", serif; font-size: 20pt; line-height: 1.9; text-align: right; direction: rtl; margin: 8px 0 12px 0; color: #000000; break-inside: avoid; }' +
+        '</style></head><body>' +
+        '<div class="kop-cetak"><h2>' + k.judul + '</h2><div class="sub">Yayasan Darul Muttaqien Talang Pangeran — ' + k.khatib + '</div></div>' +
+        '<div class="kolom-ganda">' +
+          '<div class="arab-20pt">' + k.salamArab + '</div>' +
+          '<div class="arab-20pt">' + k.dalilArab + '</div>' +
+          paragrafHtml +
+          '<div class="arab-20pt">' + k.doaArab + '</div>' +
+        '</div>' +
+        '<scr' + 'ipt>window.onload = function() { window.print(); };<\/scr' + 'ipt>' +
+        '</body></html>'
+      );
+      w.document.close();
+    }
+
+    function eksporKhutbahWord(idKhutbah) {
+      var k = DATA_KHUTBAH.find(function(x) { return x.id === idKhutbah; });
+      if (!k) return;
+      var paragrafHtml = k.paragraf.map(function(p) {
+        return '<p style="font-size:11pt; line-height:1.6; text-align:justify;">' + p + '</p>';
+      }).join("");
+      var docContent =
+        '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
+        '<head><meta charset="utf-8"><title>' + k.judul + '</title>' +
+        '<style>' +
+          '@page Section1 { size: 33.0cm 21.5cm; mso-page-orientation: landscape; margin: 1.5cm; columns: 2; column-gap: 1.2cm; }' +
+          'div.Section1 { page: Section1; }' +
+          '.arab { font-family: "Traditional Arabic", "Amiri", serif; font-size: 20pt; text-align: right; direction: rtl; line-height: 1.9; }' +
+        '</style></head><body><div class="Section1">' +
+          '<h2 style="text-align:center; color:#0b3d28;">' + k.judul + '</h2>' +
+          '<p style="text-align:center; font-size:10pt;">Yayasan Darul Muttaqien Talang Pangeran — ' + k.khatib + '</p><hr/>' +
+          '<p class="arab">' + k.salamArab + '</p>' +
+          '<p class="arab">' + k.dalilArab + '</p>' +
+          paragrafHtml +
+          '<p class="arab">' + k.doaArab + '</p>' +
+        '</div></body></html>';
+      var blob = new Blob(["\ufeff", docContent], { type: "application/msword" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = idKhutbah + "_Landscape_2Kolom.doc";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    /* PUSAT KONFIRMASI TERPADU */
+    function salinRekening(teks, label) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(teks).then(function() {
+          alert(label + " (" + teks + ") berhasil disalin!");
+        }).catch(function() {
+          prompt("Salin nomor rekening berikut:", teks);
+        });
+      } else {
+        prompt("Salin nomor rekening berikut:", teks);
+      }
+    }
+
+    function kirimKonfirmasiPublikWa() {
+      var jenis = document.getElementById("konfJenis").value;
+      var nama = document.getElementById("konfNama").value.trim();
+      var hp = document.getElementById("konfHp").value.trim() || "-";
+      var detail = document.getElementById("konfDetail").value.trim() || "-";
+      var catatan = document.getElementById("konfCatatan").value.trim() || "-";
+      var tujuanWa = document.getElementById("konfTujuanWa").value;
+
+      if (!nama) {
+        alert("Mohon isi Nama Lengkap terlebih dahulu.");
+        return;
+      }
+
+      kirimKeAppsScript({
+        action: "addKonfirmasi",
+        jenis: jenis,
+        nama: nama,
+        hp: hp,
+        detail: detail,
+        catatan: catatan
+      });
+
+      var pesan = encodeURIComponent(
+        "Assalamu'alaikum Warahmatullahi Wabarakatuh,\n\n" +
+        "KONFIRMASI LAYANAN PUBLIK YAYASAN DARUL MUTTAQIEN\n" +
+        "• Jenis Konfirmasi: " + jenis + "\n" +
+        "• Nama Lengkap: " + nama + "\n" +
+        "• No. HP / WhatsApp: " + hp + "\n" +
+        "• Rincian (Nominal / Program / Judul Kitab): " + detail + "\n" +
+        "• Catatan Tambahan: " + catatan + "\n\n" +
+        "Jazakumullah khairan katsiran."
+      );
+      window.open(tujuanWa + "?text=" + pesan, "_blank");
+    }
+
+    function cetakBuktiKonfirmasi() {
+      var jenis = document.getElementById("konfJenis").value;
+      var nama = document.getElementById("konfNama").value.trim() || "Hamba Allah";
+      var hp = document.getElementById("konfHp").value.trim() || "-";
+      var detail = document.getElementById("konfDetail").value.trim() || "-";
+      var catatan = document.getElementById("konfCatatan").value.trim() || "-";
+      var tgl = new Date().toLocaleDateString("id-ID", { year: "numeric", month: "long", day: "numeric" });
+
+      var w = window.open("", "_blank", "width=680,height=580");
+      if (!w) { alert("Izinkan pop-up browser untuk mencetak tanda terima konfirmasi."); return; }
+      w.document.write(
+        '<!DOCTYPE html><html><head><title>Bukti Konfirmasi — Yayasan Darul Muttaqien</title><style>' +
+        'body{font-family: Arial, sans-serif; padding: 24px; color: #1d2622;}' +
+        '.box{max-width: 520px; margin: auto; border: 2px dashed #0b3d28; padding: 24px; border-radius: 12px;}' +
+        'h3{text-align: center; color: #0b3d28; margin-bottom: 4px;}' +
+        '.sub{text-align: center; font-size: 11px; color: #5a6660; margin-bottom: 14px;}' +
+        '.row{display: flex; justify-content: space-between; margin: 8px 0; font-size: 13px; border-bottom: 1px dotted #e2e8f0; padding-bottom: 4px;}' +
+        '</style></head><body><div class="box">' +
+          '<h3>YAYASAN DARUL MUTTAQIEN</h3>' +
+          '<div class="sub">Jl. Mesjid No. 110 Talang Pangeran, Teluk Gelam, OKI • darulmuttaqien.my.id</div>' +
+          '<h4 style="text-align:center; color:#c59b27; margin:12px 0;">LEMBAR BUKTI KONFIRMASI LAYANAN PUBLIK</h4>' +
+          '<div class="row"><span>Tanggal:</span> <b>' + tgl + '</b></div>' +
+          '<div class="row"><span>Jenis Konfirmasi:</span> <b>' + jenis + '</b></div>' +
+          '<div class="row"><span>Nama Lengkap:</span> <b>' + nama + '</b></div>' +
+          '<div class="row"><span>Kontak / WA:</span> <b>' + hp + '</b></div>' +
+          '<div class="row"><span>Rincian:</span> <b>' + detail + '</b></div>' +
+          '<div class="row"><span>Catatan:</span> <b>' + catatan + '</b></div>' +
+          '<p style="font-size:12px; text-align:center; font-style:italic; margin-top:16px;">“Jazakumullah khairan katsiran atas partisipasi dan kepercayaan Anda.”</p>' +
+        '</div><scr' + 'ipt>window.onload = function() { window.print(); };<\/scr' + 'ipt></body></html>'
+      );
+      w.document.close();
+    }
+
+    function setActiveNav(idNav) {
+      document.querySelectorAll("ul.nav-menu > li > a").forEach(function(el) {
+        el.classList.remove("active-menu-item");
+      });
+      var target = document.getElementById(idNav);
+      if (target) target.classList.add("active-menu-item");
+      var navList = document.getElementById("navList");
+      if (navList) navList.classList.remove("open");
+    }
+
+    function bacaMajalahLengkap(tipe, idItem) {
+      var vp = document.getElementById("mainViewport");
+      var item = null;
+      var rubrikLabel = "";
+
+      if (tipe === "kajian") {
+        item = DATA_KAJIAN.find(function(x) { return x.id === idItem; });
+        rubrikLabel = "Majalah Kajian Islam • Kategori " + (item ? item.kategori : "");
+      } else if (tipe === "khutbah") {
+        item = DATA_KHUTBAH.find(function(x) { return x.id === idItem; });
+        rubrikLabel = "Majalah Mimbar Khutbah Jumat • Format 2 Kolom Landscape";
+      } else if (tipe === "artikel") {
+        item = DATA_ARTIKEL.find(function(x) { return x.id === idItem; });
+        rubrikLabel = item ? item.rubrik : "Rubrik Artikel";
+      }
+
+      if (!item) return;
+
+      var arabHtml = "";
+      if (item.arab) arabHtml += '<div class="mag-arabic-box">' + item.arab + '</div>';
+      if (item.salamArab) arabHtml += '<div class="khutbah-arab-20">' + item.salamArab + '</div>';
+      if (item.dalilArab) arabHtml += '<div class="khutbah-arab-20">' + item.dalilArab + '</div>';
+
+      var doaHtml = item.doaArab ? '<div class="khutbah-arab-20">' + item.doaArab + '</div>' : "";
+      var kutipanHtml = item.kutipan ? '<div class="mag-pullquote">“' + item.kutipan + '”</div>' : "";
+      var leadHtml = item.lead ? '<div class="mag-lead">“' + item.lead + '”</div>' : "";
+      var paragrafHtml = (item.paragraf || []).map(function(p) { return "<p>" + p + "</p>"; }).join("");
+
+      var tombolKhutbah = (tipe === "khutbah")
+        ? '<div style="display:flex; flex-wrap:wrap; gap:8px;">' +
+            '<button type="button" class="btn-primary" onclick="cetakKhutbahLandscape(\'' + item.id + '\')">🖨️ Cetak 2 Kolom Landscape</button>' +
+            '<button type="button" class="btn-doc" onclick="eksporKhutbahWord(\'' + item.id + '\')">📥 Unduh Word (.doc)</button>' +
+          '</div>'
+        : '<a href="' + KONFIG_PORTAL.WEB_INDUK_URL + '" class="btn-primary">🏛️ Kembali ke Web Induk ↗</a>';
+
+      var metaInfo =
+        (item.kitab ? "Kitab Rujukan: <strong>" + item.kitab + "</strong> • " : "") +
+        (item.khatib ? "Khatib: <strong>" + item.khatib + "</strong> • " : "") +
+        (item.penulis ? "Penulis: <strong>" + item.penulis + "</strong> • " : "") +
+        (item.edisi || item.tanggal || "");
+
+      vp.innerHTML =
+        '<div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px;">' +
+          '<button type="button" class="pill-btn" onclick="bukaHalaman(\'' + tipe + '\')">← Kembali ke Daftar ' + tipe.charAt(0).toUpperCase() + tipe.slice(1) + '</button>' +
+          tombolKhutbah +
+        '</div>' +
+        '<div class="magazine-sheet">' +
+          '<div class="mag-masthead">' +
+            '<div>' +
+              '<span class="mag-rubrik">' + rubrikLabel + '</span>' +
+              '<h2 style="margin-bottom:4px;">' + item.judul + '</h2>' +
+              '<div style="font-size:0.82rem; color:var(--ink-muted);">' + metaInfo + '</div>' +
+            '</div>' +
+            '<span class="mag-edition-badge">Pustaka Majalah Darul Muttaqien</span>' +
+          '</div>' +
+          leadHtml +
+          '<div class="mag-columns">' + arabHtml + paragrafHtml + kutipanHtml + doaHtml + '</div>' +
+        '</div>';
+      vp.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function bukaHalaman(menu, subFilter) {
+      var vp = document.getElementById("mainViewport");
+      if (!vp) return;
+      applyAdminUI();
+      var unlocked = isAdminUnlocked();
+
+      if (menu === "kajian") {
+        setActiveNav("nav-kajian");
+        var katAktif = subFilter || "Semua";
+        var list = (katAktif === "Semua") ? DATA_KAJIAN : DATA_KAJIAN.filter(function(k) { return k.kategori === katAktif; });
+        var pills = ["Semua", "Akidah", "Fiqh", "Akhlak", "Tarikh"].map(function(cat) {
+          var activeCls = (cat === katAktif) ? "active" : "";
+          return '<button type="button" class="pill-btn ' + activeCls + '" onclick="bukaHalaman(\'kajian\', \'' + cat + '\')">' + cat + '</button>';
+        }).join("");
+
+        var cards = list.map(function(k) {
+          return '<div class="mag-card">' +
+            '<div>' +
+              '<span class="viewer-tag">📖 Kajian ' + k.kategori + '</span>' +
+              '<h4>' + k.judul + '</h4>' +
+              '<div class="mag-card-meta">Kitab: <strong>' + k.kitab + '</strong> • ' + k.edisi + '</div>' +
+              '<p>' + k.lead + '</p>' +
+            '</div>' +
+            '<button type="button" class="btn-primary" onclick="bacaMajalahLengkap(\'kajian\', \'' + k.id + '\')">Baca Format Majalah →</button>' +
+          '</div>';
+        }).join("");
+
+        vp.innerHTML =
+          '<span class="viewer-tag">📖 Khazanah Kajian Islam (Edisi Majalah)</span>' +
+          '<h2>Arsip Lengkap Kajian Keislaman Yayasan Darul Muttaqien</h2>' +
+          '<p style="margin-bottom:14px;">Kelengkapan kajian dari website induk ditampilkan dalam format majalah dua kolom yang elegan.</p>' +
+          '<div class="filter-pills">' + pills + '</div>' +
+          '<div class="card-grid-3">' + cards + '</div>';
+      } else if (menu === "khutbah") {
+        setActiveNav("nav-khutbah");
+        var cardsK = DATA_KHUTBAH.map(function(k) {
+          return '<div class="mag-card">' +
+            '<div>' +
+              '<span class="viewer-tag">🕌 Mimbar Khutbah Jumat</span>' +
+              '<h4>' + k.judul + '</h4>' +
+              '<div class="mag-card-meta">Oleh: <strong>' + k.khatib + '</strong> • ' + k.tanggal + '</div>' +
+              '<p>' + k.paragraf[0].slice(0, 140) + '...</p>' +
+            '</div>' +
+            '<div style="display:flex; flex-wrap:wrap; gap:8px;">' +
+              '<button type="button" class="btn-primary" onclick="bacaMajalahLengkap(\'khutbah\', \'' + k.id + '\')">📖 Baca Majalah</button>' +
+              '<button type="button" class="btn-gold" onclick="cetakKhutbahLandscape(\'' + k.id + '\')">🖨️ Cetak 2 Kolom Landscape</button>' +
+            '</div>' +
+          '</div>';
+        }).join("");
+
+        vp.innerHTML =
+          '<span class="viewer-tag">🕌 Kumpulan Khutbah Pilihan</span>' +
+          '<h2>Arsip Naskah Khutbah Jumat (Tampilan Majalah &amp; Cetak 2 Kolom Landscape)</h2>' +
+          '<p style="margin-bottom:14px;">Pilih naskah khutbah untuk dibaca dalam format majalah atau langsung dicetak dalam <strong>2 kolom landscape</strong> (teks Arab 20pt).</p>' +
+          '<div class="card-grid-3">' + cardsK + '</div>';
+      } else if (menu === "artikel") {
+        setActiveNav("nav-artikel");
+        var cardsA = DATA_ARTIKEL.map(function(a) {
+          return '<div class="mag-card">' +
+            '<div>' +
+              '<span class="viewer-tag">📰 ' + a.rubrik + '</span>' +
+              '<h4>' + a.judul + '</h4>' +
+              '<div class="mag-card-meta">Oleh: <strong>' + a.penulis + '</strong> • ' + a.tanggal + '</div>' +
+              '<p>' + a.lead + '</p>' +
+            '</div>' +
+            '<button type="button" class="btn-primary" onclick="bacaMajalahLengkap(\'artikel\', \'' + a.id + '\')">Baca Artikel Majalah →</button>' +
+          '</div>';
+        }).join("");
+
+        vp.innerHTML =
+          '<span class="viewer-tag">📰 Artikel Keislaman &amp; Pendidikan</span>' +
+          '<h2>Rubrik Artikel Pilihan Yayasan Darul Muttaqien</h2>' +
+          '<p style="margin-bottom:14px;">Kumpulan tulisan keilmuan dan wawasan keumatan dalam tampilan majalah elegan.</p>' +
+          '<div class="card-grid-3">' + cardsA + '</div>';
+      } else if (menu === "katalog") {
+        setActiveNav("nav-katalog");
+        var cardsKat = DATA_KATALOG.map(function(c) {
+          var konfArg = "Pesanan Katalog Dakwah: " + c.judul;
+          return '<div class="mag-card">' +
+            '<div>' +
+              '<span class="viewer-tag">📚 ' + c.kode + ' • ' + c.kategori + '</span>' +
+              '<h4>' + c.judul + '</h4>' +
+              '<div class="mag-card-meta">Penyusun: <strong>' + c.penyusun + '</strong></div>' +
+              '<p>' + c.deskripsi + '</p>' +
+            '</div>' +
+            '<div style="display:flex; flex-direction:column; gap:8px;">' +
+              '<div style="font-size:0.78rem; font-weight:700; color:var(--emerald-mid); background:var(--emerald-soft); padding:6px 10px; border-radius:7px;">' + c.info + '</div>' +
+              '<button type="button" class="btn-primary" onclick="bukaHalaman(\'konfirmasi\', \'' + konfArg.replace(/'/g, "") + '\')">📩 Konfirmasi Permintaan / Pesanan →</button>' +
+            '</div>' +
+          '</div>';
+        }).join("");
+
+        vp.innerHTML =
+          '<span class="viewer-tag">📚 Katalog Dakwah &amp; Bahan Ajar</span>' +
+          '<h2>Katalog Kitab Rujukan, Modul &amp; Materi Dakwah</h2>' +
+          '<p style="margin-bottom:14px;">Koleksi kitab, modul pembelajaran, dan buku saku dakwah Yayasan Darul Muttaqien dalam format majalah.</p>' +
+          '<div class="card-grid-3">' + cardsKat + '</div>';
+      } else if (menu === "galeri") {
+        setActiveNav("nav-galeri");
+        var adminBtnHtml = !unlocked
+          ? '<button type="button" class="pill-btn" onclick="bukaModalPin()">🔒 Mode Admin Galeri (PIN)</button>'
+          : '<span style="font-size:0.78rem; font-weight:700; color:var(--emerald-deep); background:#dcfce7; padding:6px 12px; border-radius:20px;">✅ Mode Admin Aktif</span>';
+
+        vp.innerHTML =
+          '<div class="admin-bar-strip">' +
+            '<div>' +
+              '<span class="viewer-tag" style="margin-bottom:4px;">🖼️ Galeri Photo Yayasan Darul Muttaqien</span>' +
+              '<h2 style="margin:0;">Dokumentasi Photo Kegiatan &amp; Dakwah</h2>' +
+            '</div>' +
+            '<div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">' + adminBtnHtml + '</div>' +
+          '</div>' +
+          '<div class="admin-only-block">' +
+            '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:12px; margin-bottom:12px;">' +
+              '<div>' +
+                '<label style="display:block; font-size:0.8rem; font-weight:700; color:var(--emerald-deep); margin-bottom:4px;">Tahun Photo</label>' +
+                '<input type="text" id="inputTahunFotoGaleri" value="2026" style="width:100%; padding:8px 12px; border:1px solid #cbd5e1; border-radius:8px;" />' +
+              '</div>' +
+              '<div>' +
+                '<label style="display:block; font-size:0.8rem; font-weight:700; color:var(--emerald-deep); margin-bottom:4px;">Keterangan Singkat Photo</label>' +
+                '<input type="text" id="inputKetFotoGaleri" placeholder="Contoh: Pengajian Rutin Masjid Talang Pangeran" style="width:100%; padding:8px 12px; border:1px solid #cbd5e1; border-radius:8px;" />' +
+              '</div>' +
+            '</div>' +
+            '<div class="dropzone-galeri" id="dropzoneGaleriBox"' +
+                 ' onclick="document.getElementById(\'inputFileGaleri\').click()"' +
+                 ' ondragover="event.preventDefault(); this.classList.add(\'dragover\');"' +
+                 ' ondragleave="this.classList.remove(\'dragover\');"' +
+                 ' ondrop="event.preventDefault(); this.classList.remove(\'dragover\'); prosesFileFotoGaleri(event.dataTransfer.files);">' +
+              '<div style="font-size:2rem; margin-bottom:6px;">📥🖼️</div>' +
+              '<div style="font-weight:800; color:var(--emerald-deep); font-size:0.98rem;">Seret &amp; Lepas (Drag &amp; Drop) Photo ke Sini atau Klik untuk Impor Photo</div>' +
+              '<div style="font-size:0.8rem; color:var(--ink-muted); margin-top:4px;">Otomatis terunggah ke Google Drive &amp; dikonversi link-nya ke Google Sheets.</div>' +
+              '<input type="file" id="inputFileGaleri" accept="image/*" multiple style="display:none;" onchange="prosesFileFotoGaleri(this.files)" />' +
+            '</div>' +
+            '<div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:14px; margin-bottom:18px;">' +
+              '<div style="font-size:0.82rem; font-weight:700; color:var(--emerald-deep); margin-bottom:8px;">🔗 Atau Tempel Link Google Drive Photo (Otomatis Konversi Link):</div>' +
+              '<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:10px;">' +
+                '<input type="text" id="inputJudulLinkGaleri" placeholder="Judul Photo..." style="padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px;" />' +
+                '<input type="text" id="inputLinkDriveGaleri" placeholder="https://drive.google.com/file/d/..." style="padding:8px 10px; border:1px solid #cbd5e1; border-radius:8px;" />' +
+                '<button type="button" class="btn-primary" onclick="tambahPhotoViaLinkDrive()">➕ Konversi &amp; Tambah Photo</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="gallery-grid" id="galeriPhotoGrid"></div>';
+        renderGridGaleri();
+      } else if (menu === "video") {
+        setActiveNav("nav-video");
+        var adminVidHtml = !unlocked
+          ? '<button type="button" class="pill-btn" onclick="bukaModalPin()">🔒 Mode Admin Video (PIN)</button>'
+          : '<span style="font-size:0.78rem; font-weight:700; color:var(--emerald-deep); background:#dcfce7; padding:6px 12px; border-radius:20px;">✅ Mode Admin Aktif</span>';
+
+        var daftarVid = ambilDaftarVideo();
+        var videoCards = daftarVid.map(function(v) {
+          var thumbClean = konversiLinkDriveKeGambar(v.thumbUrl);
+          return '<div class="video-card">' +
+            '<a href="' + v.videoUrl + '" target="_blank" rel="noopener noreferrer" class="video-thumb-wrap" title="Tonton Video: ' + v.judul + '">' +
+              '<img src="' + thumbClean + '" alt="' + v.judul + '" />' +
+              '<span class="video-play-badge">▶</span>' +
+              '<span class="video-duration-tag">⏱️ ' + v.durasi + '</span>' +
+            '</a>' +
+            '<div class="video-body">' +
+              '<span class="viewer-tag" style="margin-bottom:6px;">🎥 ' + v.kategori + '</span>' +
+              '<h4>' + v.judul + '</h4>' +
+              '<p>' + v.deskripsi + '</p>' +
+              '<div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">' +
+                '<a href="' + v.videoUrl + '" target="_blank" rel="noopener noreferrer" class="btn-primary">▶️ Buka Link Video ↗</a>' +
+                '<button type="button" class="btn-danger admin-only-el" onclick="hapusVideoItem(\'' + v.id + '\')">🗑️ Hapus</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }).join("");
+
+        vp.innerHTML =
+          '<div class="admin-bar-strip">' +
+            '<div>' +
+              '<span class="viewer-tag" style="margin-bottom:4px;">🎥 Kumpulan Video Dakwah &amp; Dokumentasi</span>' +
+              '<h2 style="margin:0;">Galeri Video (Thumbnail &amp; Link Video)</h2>' +
+            '</div>' +
+            '<div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">' + adminVidHtml + '</div>' +
+          '</div>' +
+          '<div class="admin-only-block form-box" style="margin-top:0; margin-bottom:18px;">' +
+            '<h4 style="font-family:\'Cormorant Garamond\',serif; font-size:1.3rem; color:var(--emerald-deep); margin-bottom:10px;">➕ Tambah Link &amp; Thumbnail Video Baru</h4>' +
+            '<div class="form-grid">' +
+              '<div class="form-group"><label>Judul Video *</label><input type="text" id="vidJudulInput" placeholder="Contoh: Kajian Kitab Aqidatul Awam" /></div>' +
+              '<div class="form-group"><label>Link / URL Video (YouTube / Google Drive) *</label><input type="text" id="vidLinkInput" placeholder="https://www.youtube.com/watch?v=..." /></div>' +
+              '<div class="form-group"><label>URL Gambar Thumbnail (Otomatis jika YouTube / Link Drive)</label><input type="text" id="vidThumbInput" placeholder="Kosongkan untuk thumbnail YouTube otomatis" /></div>' +
+              '<div class="form-group"><label>Kategori &amp; Durasi</label><div style="display:flex; gap:8px;"><input type="text" id="vidKatInput" value="Kajian & Dakwah" /><input type="text" id="vidDurasiInput" value="20:00" style="width:95px;" /></div></div>' +
+            '</div>' +
+            '<div class="form-group" style="margin-bottom:12px;"><label>Deskripsi Singkat</label><input type="text" id="vidDeskInput" placeholder="Keterangan singkat isi rekaman video..." /></div>' +
+            '<button type="button" class="btn-primary" onclick="tambahVideoBaru()">💾 Simpan ke Kumpulan Video</button>' +
+          '</div>' +
+          '<div class="video-grid">' + videoCards + '</div>';
+      } else {
+        setActiveNav("nav-konfirmasi");
+        var detailPrefill = subFilter || "";
+        var selKatalog = detailPrefill ? " selected" : "";
+        vp.innerHTML =
+          '<span class="viewer-tag">🤲 Pusat Konfirmasi Terpadu &amp; Donasi Publik</span>' +
+          '<h2>Konfirmasi Donasi &amp; Infaq, Kehadiran Kajian &amp; Katalog Dakwah</h2>' +
+          '<p>Gunakan formulir terpadu di bawah ini untuk melakukan konfirmasi donasi/infaq, konfirmasi kehadiran majelis kajian, maupun permintaan katalog dakwah. Data otomatis tercatat ke Google Sheets dan diteruskan ke WhatsApp pengurus.</p>' +
+          '<div class="bank-grid">' +
+            '<div class="bank-card">' +
+              '<div class="bank-name">🏦 BRI Cabang Kayu Agung</div>' +
+              '<div class="bank-number">0030-01-013416-53-8</div>' +
+              '<div class="bank-holder">a.n. Yayasan Darul Muttaqien Talang Pangeran</div>' +
+              '<button type="button" class="btn-primary" onclick="salinRekening(\'' + KONFIG_PORTAL.NO_REK_BRI + '\', \'No. Rekening BRI\')">📋 Salin No. Rek BRI</button>' +
+            '</div>' +
+            '<div class="bank-card">' +
+              '<div class="bank-name">🏦 Bank Syariah Indonesia (BSI)</div>' +
+              '<div class="bank-number">7185368879</div>' +
+              '<div class="bank-holder">a.n. Yayasan Darul Muttaqien Talang Pangeran</div>' +
+              '<button type="button" class="btn-primary" onclick="salinRekening(\'' + KONFIG_PORTAL.NO_REK_BSI + '\', \'No. Rekening BSI\')">📋 Salin No. Rek BSI</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="form-box">' +
+            '<h3 style="font-family:\'Cormorant Garamond\',serif; font-size:1.45rem; color:var(--emerald-deep); margin-bottom:12px;">🧾 Formulir Konfirmasi Layanan Publik</h3>' +
+            '<div class="form-grid">' +
+              '<div class="form-group">' +
+                '<label>Jenis Konfirmasi *</label>' +
+                '<select id="konfJenis">' +
+                  '<option value="Konfirmasi Donasi & Infaq">🤲 Konfirmasi Donasi &amp; Infaq</option>' +
+                  '<option value="Konfirmasi Kehadiran Kajian / Majelis">📖 Konfirmasi Kehadiran Kajian / Majelis</option>' +
+                  '<option value="Konfirmasi Pesanan Katalog Dakwah"' + selKatalog + '>📚 Konfirmasi Pesanan Katalog Dakwah</option>' +
+                '</select>' +
+              '</div>' +
+              '<div class="form-group"><label>Nama Lengkap / Donatur *</label><input type="text" id="konfNama" placeholder="Contoh: H. Abdullah / Hamba Allah" /></div>' +
+              '<div class="form-group"><label>Nomor HP / WhatsApp *</label><input type="text" id="konfHp" placeholder="Contoh: 0812-xxxx-xxxx" /></div>' +
+              '<div class="form-group">' +
+                '<label>Kirim Konfirmasi ke WhatsApp *</label>' +
+                '<select id="konfTujuanWa">' +
+                  '<option value="' + KONFIG_PORTAL.WA_LINK_BENDAHARA + '">Bendahara Yayasan (Donasi &amp; Infaq)</option>' +
+                  '<option value="' + KONFIG_PORTAL.WA_LINK_PENGURUS_1 + '">Pengurus Yayasan 1 (Kajian &amp; Umum)</option>' +
+                  '<option value="' + KONFIG_PORTAL.WA_LINK_PENGURUS_2 + '">Pengurus Yayasan 2 (Katalog &amp; Acara)</option>' +
+                '</select>' +
+              '</div>' +
+            '</div>' +
+            '<div class="form-group" style="margin-bottom:12px;">' +
+              '<label>Rincian Konfirmasi (Nominal Transfer &amp; Bank / Nama Kajian / Judul Katalog) *</label>' +
+              '<input type="text" id="konfDetail" value="' + detailPrefill + '" placeholder="Contoh: Transfer BSI Rp 250.000 untuk Infaq Dakwah" />' +
+            '</div>' +
+            '<div class="form-group" style="margin-bottom:14px;">' +
+              '<label>Catatan / Doa Tambahan (Opsional)</label>' +
+              '<textarea id="konfCatatan" rows="2" placeholder="Tuliskan catatan atau titipan doa..."></textarea>' +
+            '</div>' +
+            '<div style="display:flex; flex-wrap:wrap; gap:10px;">' +
+              '<button type="button" class="btn-wa" onclick="kirimKonfirmasiPublikWa()">💬 Kirim Konfirmasi via WhatsApp</button>' +
+              '<button type="button" class="btn-primary" onclick="cetakBuktiKonfirmasi()">🖨️ Cetak Lembar Bukti Konfirmasi</button>' +
+            '</div>' +
+          '</div>';
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      applyAdminUI();
+      var params = new URLSearchParams(window.location.search);
+      var tabParam = params.get("tab") || params.get("view");
+      if (tabParam && ["kajian", "khutbah", "artikel", "katalog", "galeri", "video", "konfirmasi"].indexOf(tabParam) !== -1) {
+        bukaHalaman(tabParam);
+      } else {
+        bukaHalaman("kajian");
+      }
+      sinkronDatabaseCloud(false);
+    });
+  </script>
+</body>
+</html>
