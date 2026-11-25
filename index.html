@@ -10,6 +10,17 @@
   <!-- Mammoth.js untuk ekstrak teks langsung dari file .docx saat import -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
   <style>
+    
+    @font-face {
+      font-family: 'Al Quran Ali';
+      src: local('Al Quran Ali'), local('Al-Quran Ali'), local('AlQalam Quran'),
+           url('https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/fonts/AlQalamQuran.woff2') format('woff2'),
+           url('https://cdn.jsdelivr.net/gh/fawazahmed0/quran-api@1/fonts/AlQalamQuran.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
     :root {
       --emerald-deep: #0b3d28;
       --emerald-mid: #13583c;
@@ -96,7 +107,7 @@
     }
     .kop-logo img { width: 100%; height: 100%; object-fit: contain; }
     .kop-info { flex: 1; text-align: left; }
-    .kop-bismillah { font-family: 'Amiri', serif; font-size: 1.35rem; color: #f5dc93; margin-bottom: 2px; }
+    .kop-bismillah { font-family: 'Al Quran Ali', 'Amiri', serif; font-size: 20pt; color: #f5dc93; margin-bottom: 4px; line-height: 1.8; }
     .kop-info h1 {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: clamp(1.65rem, 3.2vw, 2.4rem);
@@ -224,7 +235,7 @@
       background: #f5f9f7; border: 1px solid #cce3d8; border-right: 4px solid var(--gold-primary);
       border-radius: 10px; padding: 14px 16px; margin: 14px 0;
       text-align: right; direction: rtl;
-      font-family: 'Amiri', serif; font-size: 1.55rem; color: var(--emerald-deep); line-height: 2;
+      font-family: 'Al Quran Ali', 'Amiri', serif; font-size: 20pt; color: var(--emerald-deep); line-height: 2;
     }
     .mag-pullquote {
       break-inside: avoid;
@@ -238,7 +249,15 @@
       background: #f5f9f7; border: 1px solid #cce3d8; border-right: 4px solid var(--gold-primary);
       border-radius: 10px; padding: 12px 16px; margin: 12px 0;
       text-align: right; direction: rtl;
-      font-family: 'Amiri', serif; font-size: 20pt; color: var(--emerald-deep); line-height: 1.95;
+      font-family: 'Al Quran Ali', 'Amiri', serif; font-size: 20pt; color: var(--emerald-deep); line-height: 2;
+    }
+
+    
+    .teks-arab, [dir="rtl"], [lang="ar"] {
+      font-family: 'Al Quran Ali', 'Amiri', 'Traditional Arabic', serif !important;
+      font-size: 20pt !important;
+      line-height: 2 !important;
+      direction: rtl;
     }
 
     /* TOOLBAR & KARTU */
@@ -576,7 +595,7 @@
 
       <div class="form-group" style="margin-bottom:12px;">
         <label>Teks Arab / Dalil / Mukadimah Khutbah (Otomatis 20pt saat Cetak Khutbah)</label>
-        <textarea id="edArab" rows="2" placeholder="Tempel teks Arab di sini (opsional)..." style="font-family:'Amiri',serif; font-size:1.15rem; text-align:right; direction:rtl;"></textarea>
+        <textarea id="edArab" rows="2" placeholder="Tempel teks Arab di sini (opsional)..." style="font-family:'Al Quran Ali','Amiri',serif; font-size:20pt; text-align:right; direction:rtl; line-height:1.9;"></textarea>
       </div>
 
       <div class="form-group" style="margin-bottom:14px;">
@@ -1418,7 +1437,7 @@
           '.kop-cetak .sub { font-size: 9.5pt; color: #4b5563; }' +
           '.kolom-ganda { column-count: 2; column-gap: 14mm; column-rule: 1px solid #9ca3af; text-align: justify; }' +
           '.kolom-ganda p { font-size: 11pt; line-height: 1.65; margin: 0 0 10px 0; }' +
-          '.arab-20pt { font-family: "Amiri", "Traditional Arabic", serif; font-size: 20pt; line-height: 1.9; text-align: right; direction: rtl; margin: 8px 0 12px 0; color: #000000; break-inside: avoid; }' +
+          '.arab-20pt { font-family: "Al Quran Ali", "Amiri", "Traditional Arabic", serif; font-size: 20pt; line-height: 1.9; text-align: right; direction: rtl; margin: 8px 0 12px 0; color: #000000; break-inside: avoid; }' +
         '</style></head><body>' +
         '<div class="kop-cetak"><h2>' + k.judul + '</h2><div class="sub">Yayasan Darul Muttaqien Talang Pangeran — ' + (k.penulis || 'Dewan Asatidz') + '</div></div>' +
         '<div class="kolom-ganda">' + arabHtml + paragrafHtml + '</div>' +
@@ -1442,7 +1461,7 @@
         '<style>' +
           '@page Section1 { size: 33.0cm 21.5cm; mso-page-orientation: landscape; margin: 1.5cm; columns: 2; column-gap: 1.2cm; }' +
           'div.Section1 { page: Section1; }' +
-          '.arab { font-family: "Traditional Arabic", "Amiri", serif; font-size: 20pt; text-align: right; direction: rtl; line-height: 1.9; }' +
+          '.arab { font-family: "Al Quran Ali", "Traditional Arabic", "Amiri", serif; font-size: 20pt; text-align: right; direction: rtl; line-height: 1.9; }' +
         '</style></head><body><div class="Section1">' +
           '<h2 style="text-align:center; color:#0b3d28;">' + k.judul + '</h2>' +
           '<p style="text-align:center; font-size:10pt;">Yayasan Darul Muttaqien Talang Pangeran — ' + (k.penulis || '') + '</p><hr/>' +
@@ -1567,7 +1586,14 @@
 
       var leadHtml = item.lead ? '<div class="mag-lead">“' + item.lead + '”</div>' : "";
       var listP = splitParagraf(item.paragrafRaw);
-      var paragrafHtml = listP.map(function(p) { return "<p>" + p + "</p>"; }).join("");
+      var paragrafHtml = listP.map(function(p) {
+        var hasArabic = /[\u0600-\u06FF]/.test(p);
+        var latinOnly = p.replace(/[\u0600-\u06FF\s0-9\u0660-\u0669.,;:!?()«»"'-]/g, "");
+        if (hasArabic && latinOnly.length === 0) {
+          return '<div class="mag-arabic-box">' + p + '</div>';
+        }
+        return "<p>" + p.replace(/([\u0600-\u06FF][\u0600-\u06FF\s0-9\u0660-\u0669.,;:!?()«»]*[\u0600-\u06FF])/g, '<span class="teks-arab">$1</span>') + "</p>";
+      }).join("");
 
       var lampiranHtml = "";
       if (item.linkDokumen) {
