@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Mammoth.js untuk ekstrak teks langsung dari file .docx saat import -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
   <style>
     :root {
       --emerald-deep: #0b3d28;
@@ -273,6 +275,12 @@
       padding: 9px 16px; border-radius: 9px; font-weight: 700; text-decoration: none;
       font-size: 0.83rem; border: none; cursor: pointer; transition: 0.2s;
     }
+    .btn-edit {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #fef3c7; color: #92400e !important;
+      padding: 7px 12px; border-radius: 8px; font-weight: 700;
+      font-size: 0.78rem; border: 1px solid #fde68a; cursor: pointer;
+    }
     .btn-danger {
       display: inline-flex; align-items: center; gap: 5px;
       background: #fee2e2; color: #991b1b !important;
@@ -323,7 +331,7 @@
     .video-body h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.28rem; color: var(--emerald-deep); margin-bottom: 5px; }
     .video-body p { font-size: 0.83rem; color: var(--ink-muted); margin-bottom: 12px; }
 
-    /* GALERI KHUSUS PHOTO & MODE ADMIN */
+    /* MODE ADMIN & DROPZONE */
     .admin-bar-strip {
       display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;
       background: #f4f8f6; border: 1px solid #cce3d8; border-radius: 12px;
@@ -334,13 +342,13 @@
     body.portal-admin-unlocked .admin-only-block { display: block !important; }
     .admin-only-block { display: none; }
 
-    .dropzone-galeri {
+    .dropzone-box {
       border: 2.5px dashed var(--gold-primary);
       background: linear-gradient(135deg, #fffdf7 0%, #f4f9f6 100%);
-      border-radius: 14px; padding: 24px 20px; text-align: center;
-      margin-bottom: 16px; cursor: pointer; transition: all 0.25s ease;
+      border-radius: 14px; padding: 20px; text-align: center;
+      margin-bottom: 14px; cursor: pointer; transition: all 0.25s ease;
     }
-    .dropzone-galeri.dragover {
+    .dropzone-box.dragover {
       background: #e9f2ee; border-color: var(--emerald-deep); transform: scale(1.01);
     }
     .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-top: 14px; }
@@ -365,7 +373,7 @@
     .gallery-caption h5 { font-size: 0.98rem; color: var(--emerald-deep); font-weight: 800; margin-bottom: 4px; }
     .gallery-caption p { font-size: 0.82rem; color: var(--ink-muted); margin-bottom: 10px; }
 
-    /* FORM & KONFIRMASI */
+    /* FORM, MODAL & KONFIRMASI */
     .bank-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 16px 0; }
     .bank-card {
       background: linear-gradient(135deg, #f7fbf9 0%, #edf7f2 100%);
@@ -384,6 +392,16 @@
     .form-group input, .form-group select, .form-group textarea {
       width: 100%; padding: 9px 12px; border: 1px solid #cbd5e1; border-radius: 9px;
       font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.88rem;
+    }
+
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(7, 41, 27, 0.68);
+      z-index: 999; align-items: center; justify-content: center; padding: 16px; overflow-y: auto;
+    }
+    .modal-card {
+      background: #ffffff; border-radius: 16px; border-top: 4px solid #c59b27;
+      max-width: 760px; width: 100%; padding: 22px 24px;
+      box-shadow: 0 22px 48px rgba(0, 0, 0, 0.28); max-height: 92vh; overflow-y: auto;
     }
 
     .cloud-status-pill {
@@ -466,9 +484,10 @@
   <div class="container">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
       <span class="cloud-status-pill" id="cloudSyncBadge">☁️ Database Google Sheets Terhubung</span>
-      <div style="display:flex; gap:8px; align-items:center;">
+      <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
         <button type="button" class="pill-btn" id="btnGlobalAdminOpen" onclick="bukaModalPin()">🔒 Mode Admin (PIN)</button>
-        <button type="button" class="pill-btn admin-only-el" onclick="bukaPengaturanEndpoint()">⚙️ URL Apps Script</button>
+        <button type="button" class="btn-primary admin-only-el" onclick="bukaEditorKonten()">✍️ Tambah / Impor Konten (DOC/PDF)</button>
+        <button type="button" class="pill-btn admin-only-el" onclick="sinkronDatabaseCloud(true)">🔄 Sinkron Sheets</button>
         <button type="button" class="btn-danger admin-only-el" onclick="kunciModeAdmin()">🔐 Kunci Admin</button>
       </div>
     </div>
@@ -476,18 +495,98 @@
   </div>
 
   <!-- MODAL VERIFIKASI PIN ADMIN (SINKRON DENGAN WEB INDUK: 2828) -->
-  <div id="modalPinAdmin" onclick="if(event.target===this) tutupModalPin()" style="display:none; position:fixed; inset:0; background:rgba(7,41,27,0.68); z-index:999; align-items:center; justify-content:center; padding:16px;">
-    <div style="background:#ffffff; border-radius:16px; border-top:4px solid #c59b27; max-width:400px; width:100%; padding:22px 24px; box-shadow:0 20px 42px rgba(0,0,0,0.28);">
+  <div id="modalPinAdmin" class="modal-overlay" onclick="if(event.target===this) tutupModalPin()">
+    <div class="modal-card" style="max-width:400px;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
         <h4 style="margin:0; font-size:1.08rem; font-weight:800; color:#0b3d28;">🔐 Verifikasi PIN Mode Admin</h4>
         <button type="button" onclick="tutupModalPin()" style="background:none; border:none; font-size:1.2rem; font-weight:700; color:#64748b; cursor:pointer;">✕</button>
       </div>
-      <p style="font-size:0.83rem; color:#5a6660; margin-bottom:14px;">Masukkan PIN admin yang sama dengan website induk untuk membuka fitur unggah/seret photo galeri, video &amp; kelola database.</p>
+      <p style="font-size:0.83rem; color:#5a6660; margin-bottom:14px;">Masukkan PIN admin yang sama dengan website induk untuk membuka fitur tambah/edit/impor file (.doc/.pdf) pada seluruh label, galeri &amp; video.</p>
       <input type="password" id="inputPinAdmin" placeholder="Masukkan PIN Admin..." onkeydown="if(event.key==='Enter'){ event.preventDefault(); verifikasiPinAdmin(); }" style="width:100%; padding:10px 12px; border:1.5px solid #cbd5e1; border-radius:9px; font-size:1rem; font-weight:700; letter-spacing:2px; margin-bottom:10px;" />
       <div id="errPinAdmin" style="display:none; font-size:0.78rem; color:#b91c1c; background:#fef2f2; border:1px solid #fecaca; padding:7px 10px; border-radius:8px; margin-bottom:10px; font-weight:600;"></div>
       <div style="display:flex; justify-content:flex-end; gap:8px;">
         <button type="button" class="pill-btn" onclick="tutupModalPin()">Batal</button>
         <button type="button" class="btn-primary" onclick="verifikasiPinAdmin()">Buka Mode Admin ↗</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL EDITOR & IMPORT FILE (DOC / DOCX / PDF) UNTUK SEMUA LABEL -->
+  <div id="modalEditorKonten" class="modal-overlay" onclick="if(event.target===this) tutupEditorKonten()">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e5e7eb; padding-bottom:10px; margin-bottom:14px;">
+        <div>
+          <h3 id="judulModalEditor" style="font-family:'Cormorant Garamond',serif; font-size:1.5rem; color:var(--emerald-deep); margin:0;">✍️ Tambah / Edit Konten &amp; Impor File</h3>
+          <div style="font-size:0.78rem; color:var(--ink-muted);">Mendukung semua label (Kajian, Khutbah, Artikel, Katalog Dakwah) serta impor langsung dari file Word (.doc/.docx) atau PDF (.pdf).</div>
+        </div>
+        <button type="button" onclick="tutupEditorKonten()" style="background:none; border:none; font-size:1.25rem; font-weight:700; color:#64748b; cursor:pointer;">✕</button>
+      </div>
+
+      <input type="hidden" id="edKontenId" value="" />
+      <input type="hidden" id="edLinkDokumenExisting" value="" />
+      <input type="hidden" id="edNamaDokumenExisting" value="" />
+
+      <!-- ZONA IMPORT FILE (.DOC, .DOCX, .PDF) -->
+      <div class="dropzone-box" id="dropzoneDocPdf"
+           onclick="document.getElementById('inputImportDocPdf').click()"
+           ondragover="event.preventDefault(); this.classList.add('dragover');"
+           ondragleave="this.classList.remove('dragover');"
+           ondrop="event.preventDefault(); this.classList.remove('dragover'); prosesImportFileDocPdf(event.dataTransfer.files[0]);">
+        <div style="font-size:1.6rem; margin-bottom:4px;">📄📥</div>
+        <div style="font-weight:800; color:var(--emerald-deep); font-size:0.92rem;">Klik atau Seret File Dokumen (.DOC, .DOCX, .PDF) ke Sini untuk Impor</div>
+        <div style="font-size:0.78rem; color:var(--ink-muted); margin-top:3px;">File .docx otomatis diekstrak isinya ke kolom tulisan; file .doc / .pdf juga dilampirkan &amp; diunggah ke Google Drive.</div>
+        <input type="file" id="inputImportDocPdf" accept=".doc,.docx,.pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf" style="display:none;" onchange="prosesImportFileDocPdf(this.files[0])" />
+        <div id="statusImportDocPdf" style="margin-top:8px; font-size:0.8rem; font-weight:700; color:var(--emerald-mid);"></div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Label Utama / Bagian *</label>
+          <select id="edJenis" onchange="sesuaikanSubKategoriEditor()">
+            <option value="kajian">📖 Kajian</option>
+            <option value="khutbah">🕌 Kumpulan Khutbah</option>
+            <option value="artikel">📰 Artikel</option>
+            <option value="katalog">📚 Katalog Dakwah</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label id="lblSubKategori">Sub-Kategori / Rubrik *</label>
+          <input type="text" id="edKategori" placeholder="Contoh: Akidah / Fiqh / Akhlak / Tarikh" />
+        </div>
+        <div class="form-group">
+          <label>Judul Tulisan / Khutbah / Kitab *</label>
+          <input type="text" id="edJudul" placeholder="Masukkan judul lengkap..." />
+        </div>
+        <div class="form-group">
+          <label>Penulis / Khatib / Penyusun</label>
+          <input type="text" id="edPenulis" value="Dewan Asatidz Yayasan Darul Muttaqien" />
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Kitab Rujukan / Kode Katalog / Edisi</label>
+          <input type="text" id="edKitab" placeholder="Contoh: Safinatun Najah / KAT-04" />
+        </div>
+        <div class="form-group">
+          <label>Kutipan Pembuka (Lead) / Info Katalog</label>
+          <input type="text" id="edLead" placeholder="Ringkasan singkat pembuka halaman majalah..." />
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom:12px;">
+        <label>Teks Arab / Dalil / Mukadimah Khutbah (Otomatis 20pt saat Cetak Khutbah)</label>
+        <textarea id="edArab" rows="2" placeholder="Tempel teks Arab di sini (opsional)..." style="font-family:'Amiri',serif; font-size:1.15rem; text-align:right; direction:rtl;"></textarea>
+      </div>
+
+      <div class="form-group" style="margin-bottom:14px;">
+        <label>Isi Paragraf Lengkap (Pisahkan antar paragraf dengan baris kosong / Enter) *</label>
+        <textarea id="edParagraf" rows="7" placeholder="Ketik, tempel (Ctrl+V), atau impor dari file Word (.doc/.docx) / PDF di atas..."></textarea>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button type="button" class="pill-btn" onclick="tutupEditorKonten()">Batal</button>
+        <button type="button" class="btn-primary" id="btnSimpanKontenModal" onclick="simpanKontenEditor()">💾 Simpan &amp; Terbitkan ke Database</button>
       </div>
     </div>
   </div>
@@ -508,26 +607,13 @@
       NO_REK_BRI: "003001013416538",
       NO_REK_BSI: "7185368879",
       SESSION_ADMIN_KEY: "ydm_pelengkap_admin_unlocked",
+      KONTEN_STORAGE_KEY: "ydm_pelengkap_konten_v2",
       GALERI_STORAGE_KEY: "ydm_pelengkap_galeri_v2",
-      VIDEO_STORAGE_KEY: "ydm_pelengkap_video_v2",
-      ENDPOINT_STORAGE_KEY: "ydm_pelengkap_gas_url"
+      VIDEO_STORAGE_KEY: "ydm_pelengkap_video_v2"
     };
 
-    function getEndpointUrl() {
-      return localStorage.getItem(KONFIG_PORTAL.ENDPOINT_STORAGE_KEY) || KONFIG_PORTAL.APPS_SCRIPT_URL || "";
-    }
+    var PENDING_IMPORT_FILE = null;
 
-    function bukaPengaturanEndpoint() {
-      if (!isAdminUnlocked()) { bukaModalPin(); return; }
-      var saatIni = getEndpointUrl();
-      var baru = prompt("Tempel URL Web App Google Apps Script Anda (akhiran /exec):", saatIni);
-      if (baru !== null) {
-        localStorage.setItem(KONFIG_PORTAL.ENDPOINT_STORAGE_KEY, baru.trim());
-        sinkronDatabaseCloud(true);
-      }
-    }
-
-    /* KONVERSI OTOMATIS LINK GOOGLE DRIVE KE THUMBNAIL AGAR TAMPIL MULUS DI WEBSITE */
     function konversiLinkDriveKeGambar(rawUrl) {
       if (!rawUrl) return "";
       var s = String(rawUrl).trim();
@@ -548,158 +634,124 @@
       }
     }
 
-    var DATA_KAJIAN = [
+    /* DATA BAWAAN TERPADU UNTUK SEMUA LABEL */
+    var KONTEN_DEFAULT = [
       {
         id: "kaj-1",
+        jenis: "kajian",
         kategori: "Akidah",
-        kitab: "Aqidatul Awam & Jauharut Tauhid",
         judul: "Memperkokoh Tauhid: Mengenal Sifat Wajib bagi Allah SWT",
-        edisi: "Edisi Majalah 01 • Rubrik Ushuluddin",
+        penulis: "Dewan Asatidz Yayasan Darul Muttaqien",
+        kitab: "Aqidatul Awam & Jauharut Tauhid",
         lead: "Mengenal Allah SWT dengan keyakinan yang kokoh merupakan kewajiban pertama bagi setiap mukallaf sekaligus akar seluruh amal ibadah.",
         arab: "فَأَوَّلُ وَاجِبٍ عَلَى الْعِبَادِ ۞ مَعْرِفَةُ الْإِلٰهِ بِاسْتِقْصَاءِ",
-        kutipan: "Tauhid yang lurus melahirkan ketenangan jiwa dan membebaskan manusia dari ketergantungan kepada selain Allah.",
-        paragraf: [
-          "Dalam tradisi keilmuan Ahlussunnah wal Jamaah, pembahasan akidah diawali dengan mengenalkan sifat-sifat kesempurnaan Allah SWT melalui dalil naqli (Al-Qur'an dan Hadits) maupun dalil aqli yang mudah dicerna oleh para penuntut ilmu.",
-          "Dua puluh sifat wajib bagi Allah—dimulai dari Wujud, Qidam, Baqa', hingga Mukhalafatuhu lil Hawaditsi—menanamkan kesadaran mendalam bahwa tiada satu pun makhluk yang menyerupai-Nya.",
-          "Santri dan jamaah dibimbing memahami makna setiap sifat agar keimanan tidak sekadar hafalan lisan, tetapi meresap menjadi keteguhan sikap dalam kehidupan sehari-hari."
-        ]
+        paragrafRaw: "Dalam tradisi keilmuan Ahlussunnah wal Jamaah, pembahasan akidah diawali dengan mengenalkan sifat-sifat kesempurnaan Allah SWT melalui dalil naqli (Al-Qur'an dan Hadits) maupun dalil aqli yang mudah dicerna oleh para penuntut ilmu.\n\nDua puluh sifat wajib bagi Allah—dimulai dari Wujud, Qidam, Baqa', hingga Mukhalafatuhu lil Hawaditsi—menanamkan kesadaran mendalam bahwa tiada satu pun makhluk yang menyerupai-Nya.\n\nSantri dan jamaah dibimbing memahami makna setiap sifat agar keimanan tidak sekadar hafalan lisan, tetapi meresap menjadi keteguhan sikap dalam kehidupan sehari-hari.",
+        linkDokumen: "",
+        namaDokumen: ""
       },
       {
         id: "kaj-2",
+        jenis: "kajian",
         kategori: "Fiqh",
-        kitab: "Safinatun Najah & Fathul Qarib",
         judul: "Fikih Thaharah: Kunci Diterimanya Shalat & Kesempurnaan Wudhu",
-        edisi: "Edisi Majalah 02 • Rubrik Fikih Ibadah",
+        penulis: "Dewan Asatidz Yayasan Darul Muttaqien",
+        kitab: "Safinatun Najah & Fathul Qarib",
         lead: "Kesucian lahir dan batin adalah pintu gerbang munajat seorang hamba ketika berdiri menghadap Rabb-nya dalam shalat.",
         arab: "مِفْتَاحُ الصَّلَاةِ الطُّهُورُ، وَتَحْرِيمُهَا التَّكْبِيرُ، وَتَحْلِيلُهَا التَّسْلِيمُ",
-        kutipan: "Fikih bukan sekadar hafalan hukum, melainkan panduan praktis agar setiap gerakan ibadah sah sesuai tuntunan syariat.",
-        paragraf: [
-          "Kitab Safinatun Najah karya Syekh Salim bin Sumair Al-Hadhrami menjadi rujukan utama dalam memahami tata cara bersuci (thaharah) secara sistematis, mulai dari pembagian macam-macam air hingga enam rukun fardhu wudhu.",
-          "Setiap rukun wudhu—niat, membasuh wajah, membasuh kedua tangan hingga siku, mengusap sebagian kepala, membasuh kedua kaki hingga mata kaki, serta tertib—dipraktikkan secara berkesinambungan.",
-          "Dengan pemahaman thaharah yang benar, kualitas ibadah harian keluarga muslim semakin terjaga dan penuh kekhusyukan."
-        ]
+        paragrafRaw: "Kitab Safinatun Najah karya Syekh Salim bin Sumair Al-Hadhrami menjadi rujukan utama dalam memahami tata cara bersuci (thaharah) secara sistematis, mulai dari pembagian macam-macam air hingga enam rukun fardhu wudhu.\n\nSetiap rukun wudhu—niat, membasuh wajah, membasuh kedua tangan hingga siku, mengusap sebagian kepala, membasuh kedua kaki hingga mata kaki, serta tertib—dipraktikkan secara berkesinambungan.\n\nDengan pemahaman thaharah yang benar, kualitas ibadah harian keluarga muslim semakin terjaga dan penuh kekhusyukan.",
+        linkDokumen: "",
+        namaDokumen: ""
       },
       {
         id: "kaj-3",
+        jenis: "kajian",
         kategori: "Akhlak",
-        kitab: "Ta'limul Muta'allim & Al-Washaya",
         judul: "Adab Penuntut Ilmu: Memuliakan Guru sebagai Kunci Keberkahan",
-        edisi: "Edisi Majalah 03 • Rubrik Tazkiyatun Nafs",
+        penulis: "Dewan Asatidz Yayasan Darul Muttaqien",
+        kitab: "Ta'limul Muta'allim & Al-Washaya",
         lead: "Ilmu yang bermanfaat tidak diraih semata-mata dengan kecerdasan akal, melainkan melalui ketinggian adab dan ketulusan hati.",
         arab: "تَعَلَّمُوا الْعِلْمَ وَتَعَلَّمُوا لِلْعِلْمِ السَّكِينَةَ وَالْوَقَارَ",
-        kutipan: "Adab didahulukan sebelum ilmu; sebab dengan adab, ilmu yang sedikit akan tumbuh membawa cahaya manfaat.",
-        paragraf: [
-          "Imam Az-Zarnuji dalam kitab Ta'limul Muta'allim menegaskan bahwa seorang pelajar tidak akan memperoleh ilmu dan mengambil manfaat darinya kecuali dengan mengagungkan ilmu, ahli ilmu, serta menghormati gurunya.",
-          "Sikap santun kepada guru, duduk tenang saat majelis berlangsung, menjaga kebersihan kitab, serta memohon doa restu orang tua adalah amalan nyata pembuka pintu keberkahan ilmu."
-        ]
+        paragrafRaw: "Imam Az-Zarnuji dalam kitab Ta'limul Muta'allim menegaskan bahwa seorang pelajar tidak akan memperoleh ilmu dan mengambil manfaat darinya kecuali dengan mengagungkan ilmu, ahli ilmu, serta menghormati gurunya.\n\nSikap santun kepada guru, duduk tenang saat majelis berlangsung, menjaga kebersihan kitab, serta memohon doa restu orang tua adalah amalan nyata pembuka pintu keberkahan ilmu.",
+        linkDokumen: "",
+        namaDokumen: ""
       },
       {
         id: "kaj-4",
+        jenis: "kajian",
         kategori: "Tarikh",
-        kitab: "Khulashah Nurul Yaqin",
         judul: "Cahaya Dakwah di Makkah: Keteladanan Kesabaran Rasulullah ﷺ",
-        edisi: "Edisi Majalah 04 • Rubrik Sirah Nabawiyah",
+        penulis: "Dewan Asatidz Yayasan Darul Muttaqien",
+        kitab: "Khulashah Nurul Yaqin",
         lead: "Menelusuri jejak perjuangan Rasulullah ﷺ menghidupkan rasa cinta (mahabbah) dan keteladanan nyata dalam jiwa umat.",
         arab: "لَقَدْ كَانَ لَكُمْ فِي رَسُولِ اللَّهِ أُسْوَةٌ حَسَنَةٌ",
-        kutipan: "Sejarah bukan sekadar kisah masa lalu, melainkan cermin penuntun langkah umat di masa kini dan masa depan.",
-        paragraf: [
-          "Melalui kitab Khulashah Nurul Yaqin karya Syekh Umar Abdul Jabbar, kita meneladani perjalanan hidup Nabi Muhammad ﷺ sejak kelahiran beliau di Makkah hingga turunnya wahyu pertama di Gua Hira.",
-          "Keteguhan hati Rasulullah ﷺ bersama para sahabat dalam menghadapi ujian dakwah periode Makkah menjadi pelajaran abadi tentang kesabaran, kejujuran, dan amanah."
-        ]
-      }
-    ];
-
-    var DATA_KHUTBAH = [
+        paragrafRaw: "Melalui kitab Khulashah Nurul Yaqin karya Syekh Umar Abdul Jabbar, kita meneladani perjalanan hidup Nabi Muhammad ﷺ sejak kelahiran beliau di Makkah hingga turunnya wahyu pertama di Gua Hira.\n\nKeteguhan hati Rasulullah ﷺ bersama para sahabat dalam menghadapi ujian dakwah periode Makkah menjadi pelajaran abadi tentang kesabaran, kejujuran, dan amanah.",
+        linkDokumen: "",
+        namaDokumen: ""
+      },
       {
         id: "khu-1",
+        jenis: "khutbah",
+        kategori: "Khutbah Jumat",
         judul: "Khutbah Jumat: Keutamaan Menjaga Lisan dan Menunaikan Amanah",
-        khatib: "Dewan Asatidz Yayasan Darul Muttaqien",
-        tanggal: "Mimbar Jumat • Siap Cetak 2 Kolom Landscape",
-        salamArab: "اَلْحَمْدُ لِلّٰهِ الَّذِيْ أَمَرَنَا بِالصِّدْقِ وَالْأَمَانَةِ، وَنَهَانَا عَنِ الْكَذِبِ وَالْخِيَانَةِ. أَشْهَدُ أَنْ لَا إِلٰهَ إِلَّا اللّٰهُ وَحْدَهُ لَا شَرِيْكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُوْلُهُ.",
-        dalilArab: "يَا أَيُّهَا الَّذِينَ آمَنُوا اتَّقُوا اللَّهَ وَقُولُوا قَوْلًا سَدِيدًا ﴿٧٠﴾ يُصْلِحْ لَكُمْ أَعْمَالَكُمْ وَيَغْفِرْ لَكُمْ ذُنُوبَكُمْ",
-        doaArab: "اَللّٰهُمَّ اغْفِرْ لِلْمُؤْمِنِيْنَ وَالْمُؤْمِنَاتِ وَالْمُسْلِمِيْنَ وَالْمُسْلِمَاتِ، اَلْأَحْيَاءِ مِنْهُمْ وَالْمْوَاتِ، رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ.",
-        paragraf: [
-          "Ma'asyiral Muslimin rahimakumullah, marilah kita senantiasa meningkatkan ketakwaan kepada Allah SWT dengan menjalankan segala perintah-Nya dan menjauhi seluruh larangan-Nya.",
-          "Salah satu cerminan utama kesempurnaan iman seorang mukmin adalah kemampuannya menjaga lisan dari perkataan dusta, ghibah, adu domba, serta ucapan yang menyakiti hati sesama.",
-          "Rasulullah ﷺ mengingatkan bahwa keselamatan manusia sangat bergantung pada bagaimana ia menjaga lisannya. Setiap kata yang terucap dicatat dan akan dimintai pertanggungjawaban di hadapan Allah SWT.",
-          "Di samping menjaga lisan, menunaikan amanah dalam keluarga, pekerjaan, maupun pendidikan anak-anak merupakan tiang tegaknya keberkahan masyarakat."
-        ]
+        penulis: "Dewan Asatidz Yayasan Darul Muttaqien",
+        kitab: "Mimbar Jumat • Siap Cetak 2 Kolom Landscape",
+        lead: "Menjaga lisan dari perkataan sia-sia dan menunaikan amanah merupakan cerminan kesempurnaan iman seorang mukmin.",
+        arab: "يَا أَيُّهَا الَّذِينَ آمَنُوا اتَّقُوا اللَّهَ وَقُولُوا قَوْلًا سَدِيدًا ﴿٧٠﴾ يُصْلِحْ لَكُمْ أَعْمَالَكُمْ وَيَغْفِرْ لَكُمْ ذُنُوبَكُمْ",
+        paragrafRaw: "Ma'asyiral Muslimin rahimakumullah, marilah kita senantiasa meningkatkan ketakwaan kepada Allah SWT dengan menjalankan segala perintah-Nya dan menjauhi seluruh larangan-Nya.\n\nSalah satu cerminan utama kesempurnaan iman seorang mukmin adalah kemampuannya menjaga lisan dari perkataan dusta, ghibah, adu domba, serta ucapan yang menyakiti hati sesama.\n\nRasulullah ﷺ mengingatkan bahwa keselamatan manusia sangat bergantung pada bagaimana ia menjaga lisannya. Setiap kata yang terucap dicatat dan akan dimintai pertanggungjawaban di hadapan Allah SWT.\n\nDi samping menjaga lisan, menunaikan amanah dalam keluarga, pekerjaan, maupun pendidikan anak-anak merupakan tiang tegaknya keberkahan masyarakat.",
+        linkDokumen: "",
+        namaDokumen: ""
       },
       {
         id: "khu-2",
+        jenis: "khutbah",
+        kategori: "Khutbah Jumat",
         judul: "Khutbah Jumat: Mendidik Generasi Qur'ani di Era Digital",
-        khatib: "Mimbar Jumat Masjid Talang Pangeran",
-        tanggal: "Mimbar Jumat • Siap Cetak 2 Kolom Landscape",
-        salamArab: "اَلْحَمْدُ لِلّٰهِ الَّذِيْ عَلَّمَ بِالْقَلَمِ، عَلَّمَ الْإِنْسَانَ مَا لَمْ يَعْلَمْ. وَالصَّلَاةُ وَالسَّلَامُ عَلٰى سَيِّدِنَا مُحَمَّدٍ خَيْرِ الْأَنَامِ، وَعَلٰى آلِهِ وَصَحْبِهِ الْكِرَامِ.",
-        dalilArab: "يَا أَيُّهَا الَّذِينَ آمَنُوا قُوا أَنفُسَكُمْ وَأَهْلِيكُمْ نَارًا وَقُودُهَا النَّاسُ وَالْحِجَارَةُ",
-        doaArab: "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا. اَللّٰهُمَّ اجْعَلْ أَوْلَادَنَا مِنْ أَهْلِ الْعِلْمِ وَأَهْلِ الْقُرْآنِ.",
-        paragraf: [
-          "Sidang Jumat yang dimuliakan Allah, anak-anak kita adalah amanah agung dari Allah SWT yang kelak menjadi penyejuk pandangan mata sekaligus investasi amal jariyah bagi kedua orang tuanya.",
-          "Di tengah derasnya arus informasi digital saat ini, membekali putra-putri kita dengan bacaan Al-Qur'an yang fasih, pemahaman akidah yang lurus, dan akhlakul karimah merupakan benteng paling kokoh.",
-          "Mari kita dukung penuh langkah generasi muda dalam menuntut ilmu agama, mendampingi hafalan mereka di rumah, serta memuliakan para guru yang membimbing mereka dengan penuh kesabaran."
-        ]
-      }
-    ];
-
-    var DATA_ARTIKEL = [
-      {
-        id: "art-1",
-        rubrik: "Rubrik Pendidikan & Keilmuan",
-        judul: "Adab Bermajelis Ilmu Menurut Imam Al-Ghazali",
-        penulis: "Redaksi Yayasan Darul Muttaqien",
-        tanggal: "November 2026",
-        lead: "Dalam kitab Bidayatul Hidayah, Imam Al-Ghazali merinci adab lahir dan batin seorang penuntut ilmu agar majelisnya dipenuhi ketenangan dan cahaya hikmah.",
-        arab: "إِنَّمَا يَنَالُ الْعِلْمَ مَنْ عَظَّمَهُ وَعَظَّمَ أَهْلَهُ",
-        kutipan: "Hati yang bersih dari kesombongan ibarat tanah subur yang siap menumbuhkan benih ilmu menjadi amal saleh.",
-        paragraf: [
-          "Menghadiri majelis ilmu bukan sekadar rutinitas mendengarkan ceramah, melainkan ibadah agung yang dinaungi sayap para malaikat.",
-          "Imam Al-Ghazali menekankan pentingnya meluruskan niat semata-mata mencari ridha Allah, mendahului dengan salam, duduk dengan tawadhu, serta tidak memotong pembicaraan guru.",
-          "Ketika adab-adab tersebut dijaga, suasana majelis menjadi sejuk dan ilmu yang disampaikan mudah dipahami serta diamalkan."
-        ]
+        penulis: "Mimbar Jumat Masjid Talang Pangeran",
+        kitab: "Mimbar Jumat • Siap Cetak 2 Kolom Landscape",
+        lead: "Membekali putra-putri dengan Al-Qur'an dan akhlak mulia adalah benteng kokoh di tengah derasnya arus informasi digital.",
+        arab: "يَا أَيُّهَا الَّذِينَ آمَنُوا قُوا أَنفُسَكُمْ وَأَهْلِيكُمْ نَارًا وَقُودُهَا النَّاسُ وَالْحِجَارَةُ",
+        paragrafRaw: "Sidang Jumat yang dimuliakan Allah, anak-anak kita adalah amanah agung dari Allah SWT yang kelak menjadi penyejuk pandangan mata sekaligus investasi amal jariyah bagi kedua orang tuanya.\n\nDi tengah derasnya arus informasi digital saat ini, membekali putra-putri kita dengan bacaan Al-Qur'an yang fasih, pemahaman akidah yang lurus, dan akhlakul karimah merupakan benteng paling kokoh.\n\nMari kita dukung penuh langkah generasi muda dalam menuntut ilmu agama, mendampingi hafalan mereka di rumah, serta memuliakan para guru yang membimbing mereka dengan penuh kesabaran.",
+        linkDokumen: "",
+        namaDokumen: ""
       },
       {
-        id: "art-2",
-        rubrik: "Rubrik Sosial & Keumatan",
-        judul: "Keberkahan Sedekah Jariyah untuk Pendidikan & Dakwah",
-        penulis: "Dewan Pengurus Yayasan",
-        tanggal: "November 2026",
-        lead: "Harta yang diinfakkan untuk mendukung majelis ilmu dan pembinaan generasi Qur'ani akan terus mengalirkan pahala bahkan setelah seseorang wafat.",
-        arab: "إِذَا مَاتَ الْإِنْسَانُ انْقَطَعَ عَنْهُ عَمَلُهُ إِلَّا مِنْ ثَلَاثَةٍ: إِلَّا مِنْ صَدَقَةٍ جَارِيَةٍ، أَوْ عِلْمٍ يُنْتَفَعُ بِهِ، أَوْ وَلَدٍ صَالِحٍ يَدْعُو لَهُ",
-        kutipan: "Setiap huruf Al-Qur'an yang dibaca oleh para penuntut ilmu menjadi saksi kebaikan bagi para dermawan yang memfasilitasinya.",
-        paragraf: [
-          "Sinergi antara ulama, pendidik, dan para dermawan merupakan pilar utama keberlangsungan lembaga dakwah dan pendidikan Islam di tengah masyarakat.",
-          "Melalui dukungan wakaf kitab, sarana belajar, dan infaq operasional dakwah, masyarakat turut menanam benih kebaikan yang manfaatnya dirasakan lintas generasi."
-        ]
-      }
-    ];
-
-    var DATA_KATALOG = [
+        id: "art-1",
+        jenis: "artikel",
+        kategori: "Pendidikan & Keilmuan",
+        judul: "Adab Bermajelis Ilmu Menurut Imam Al-Ghazali",
+        penulis: "Redaksi Yayasan Darul Muttaqien",
+        kitab: "Rubrik Pendidikan • Bidayatul Hidayah",
+        lead: "Dalam kitab Bidayatul Hidayah, Imam Al-Ghazali merinci adab lahir dan batin seorang penuntut ilmu agar majelisnya dipenuhi ketenangan dan cahaya hikmah.",
+        arab: "إِنَّمَا يَنَالُ الْعِلْمَ مَنْ عَظَّمَهُ وَعَظَّمَ أَهْلَهُ",
+        paragrafRaw: "Menghadiri majelis ilmu bukan sekadar rutinitas mendengarkan ceramah, melainkan ibadah agung yang dinaungi sayap para malaikat.\n\nImam Al-Ghazali menekankan pentingnya meluruskan niat semata-mata mencari ridha Allah, mendahului dengan salam, duduk dengan tawadhu, serta tidak memotong pembicaraan guru.\n\nKetika adab-adab tersebut dijaga, suasana majelis menjadi sejuk dan ilmu yang disampaikan mudah dipahami serta diamalkan.",
+        linkDokumen: "",
+        namaDokumen: ""
+      },
       {
         id: "kat-1",
-        kode: "KAT-01",
+        jenis: "katalog",
         kategori: "Modul Tahsin & Al-Qur'an",
         judul: "Panduan Praktis Makharijul Huruf & Tajwid Dasar",
-        penyusun: "Tim Pengajar Al-Qur'an Darul Muttaqien",
-        deskripsi: "Buku saku sistematis berisi makhraj huruf hijaiyah, hukum nun sukun/tanwin, mad, dan latihan bacaan tartil untuk pemula hingga lanjutan.",
-        info: "Tersedia Cetak & Edisi Digital • Rujukan Majelis Taklim"
+        penulis: "Tim Pengajar Al-Qur'an Darul Muttaqien",
+        kitab: "KAT-01 • Edisi Cetak & Digital",
+        lead: "Tersedia Cetak & Edisi Digital • Rujukan Majelis Taklim",
+        arab: "",
+        paragrafRaw: "Buku saku sistematis berisi makhraj huruf hijaiyah, hukum nun sukun/tanwin, mad, dan latihan bacaan tartil untuk pemula hingga lanjutan.\n\nCocok digunakan untuk pembelajaran TPA, Madrasah Diniyah, maupun majelis taklim dewasa.",
+        linkDokumen: "",
+        namaDokumen: ""
       },
       {
         id: "kat-2",
-        kode: "KAT-02",
+        jenis: "katalog",
         kategori: "Kitab Turats & Terjemah",
         judul: "Ringkasan Matan Safinatun Najah & Fikih Shalat",
-        penyusun: "Divisi Kurikulum & Dakwah",
-        deskripsi: "Dilengkapi bagan rukun wudhu, syarat sah shalat, dzikir ba'da shalat, serta tanya jawab masalah ibadah sehari-hari.",
-        info: "Edisi Majalah Dakwah • Rujukan Kajian Mingguan"
-      },
-      {
-        id: "kat-3",
-        kode: "KAT-03",
-        kategori: "Kumpulan Doa & Wirid",
-        judul: "Buku Saku Ratib, Dzikir Pagi Petang & Doa Harian",
-        penyusun: "Yayasan Darul Muttaqien Talang Pangeran",
-        deskripsi: "Kompilasi wirid ma'tsurat, doa-doa pilihan dari Al-Qur'an dan Hadits shahih untuk diamalkan di rumah maupun majelis.",
-        info: "Siap Cetak & Distribusi Jamaah"
+        penulis: "Divisi Kurikulum & Dakwah",
+        kitab: "KAT-02 • Rujukan Kajian Mingguan",
+        lead: "Edisi Majalah Dakwah • Rujukan Kajian Mingguan",
+        arab: "",
+        paragrafRaw: "Dilengkapi bagan rukun wudhu, syarat sah shalat, dzikir ba'da shalat, serta tanya jawab masalah ibadah sehari-hari.",
+        linkDokumen: "",
+        namaDokumen: ""
       }
     ];
 
@@ -721,15 +773,6 @@
         deskripsi: "Rangkaian acara majelis taklim bersama jamaah dan masyarakat Kecamatan Teluk Gelam, OKI.",
         thumbUrl: "https://img.youtube.com/vi/aqz-KE-bpKQ/hqdefault.jpg",
         videoUrl: "https://www.youtube.com/@YayasanDarulMuttaqienOKI"
-      },
-      {
-        id: "vid-3",
-        judul: "Murottal & Setoran Hafalan Juz 'Amma Majelis Qur'an",
-        kategori: "Tilawah & Tahfidz",
-        durasi: "12:08",
-        deskripsi: "Pembinaan bacaan Al-Qur'an tartil dan setoran hafalan surat-surat pendek.",
-        thumbUrl: "https://img.youtube.com/vi/ysz5S6PUM-U/hqdefault.jpg",
-        videoUrl: "https://www.youtube.com/@YayasanDarulMuttaqienOKI"
       }
     ];
 
@@ -746,13 +789,6 @@
         judul: "Pengajian Akbar & Silaturahmi Jamaah",
         tahun: "2025",
         keterangan: "Kebersamaan jamaah di Masjid Desa Talang Pangeran, Teluk Gelam, OKI.",
-        src: ""
-      },
-      {
-        id: "gal-3",
-        judul: "Bakti Sosial & Penyaluran Infaq Pendidikan",
-        tahun: "2024",
-        keterangan: "Penyerahan bantuan kitab dan perlengkapan belajar dari para donatur.",
         src: ""
       }
     ];
@@ -805,31 +841,48 @@
       tutupModalPin();
       applyAdminUI();
       var activeNav = document.querySelector("ul.nav-menu > li > a.active-menu-item");
-      var targetTab = activeNav ? activeNav.id.replace("nav-", "") : "galeri";
-      bukaHalaman(targetTab === "beranda" ? "galeri" : targetTab);
+      var targetTab = activeNav ? activeNav.id.replace("nav-", "") : "kajian";
+      bukaHalaman(targetTab === "beranda" ? "kajian" : targetTab);
     }
 
     function kunciModeAdmin() {
       try { sessionStorage.removeItem(KONFIG_PORTAL.SESSION_ADMIN_KEY); } catch (e) {}
       applyAdminUI();
       var activeNav = document.querySelector("ul.nav-menu > li > a.active-menu-item");
-      var targetTab = activeNav ? activeNav.id.replace("nav-", "") : "galeri";
-      bukaHalaman(targetTab === "beranda" ? "galeri" : targetTab);
+      var targetTab = activeNav ? activeNav.id.replace("nav-", "") : "kajian";
+      bukaHalaman(targetTab === "beranda" ? "kajian" : targetTab);
     }
 
-    /* SINKRONISASI CLOUD GOOGLE SHEETS */
+    /* PENYIMPANAN & SINKRONISASI KONTEN (KAJIAN, KHUTBAH, ARTIKEL, KATALOG) */
+    function ambilSemuaKonten() {
+      try {
+        var raw = localStorage.getItem(KONFIG_PORTAL.KONTEN_STORAGE_KEY);
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch (e) {}
+      return KONTEN_DEFAULT.slice();
+    }
+
+    function simpanSemuaKonten(list) {
+      try {
+        localStorage.setItem(KONFIG_PORTAL.KONTEN_STORAGE_KEY, JSON.stringify(list));
+      } catch (e) {}
+    }
+
     function sinkronDatabaseCloud(showAlert) {
       var badge = document.getElementById("cloudSyncBadge");
-      var url = getEndpointUrl();
-      if (!url) {
-        if (badge) badge.textContent = "📄 Sheet ID: " + KONFIG_PORTAL.SPREADSHEET_ID.slice(0, 12) + "... (Setel URL /exec di Mode Admin)";
-        return;
-      }
+      var url = KONFIG_PORTAL.APPS_SCRIPT_URL;
+      if (!url) return;
       if (badge) badge.textContent = "⏳ Menyinkronkan Google Sheets...";
       fetch(url + (url.indexOf("?") === -1 ? "?action=getAll" : "&action=getAll") + "&_t=" + Date.now())
         .then(function(r) { return r.json(); })
         .then(function(res) {
           if (res && res.status === "success") {
+            if (Array.isArray(res.konten) && res.konten.length > 0) {
+              simpanSemuaKonten(res.konten);
+            }
             if (Array.isArray(res.galeri) && res.galeri.length > 0) {
               simpanDaftarGaleri(res.galeri);
             }
@@ -844,12 +897,12 @@
           }
         })
         .catch(function() {
-          if (badge) badge.textContent = "⚠️ Mode Offline / Lokal (Periksa URL Apps Script)";
+          if (badge) badge.textContent = "⚠️ Mode Lokal / Offline";
         });
     }
 
     function kirimKeAppsScript(payload, onDone) {
-      var url = getEndpointUrl();
+      var url = KONFIG_PORTAL.APPS_SCRIPT_URL;
       if (!url) {
         if (typeof onDone === "function") onDone(null);
         return;
@@ -864,7 +917,250 @@
       .catch(function() { if (typeof onDone === "function") onDone(null); });
     }
 
-    /* MANAJEMEN GALERI PHOTO (IMPORT & DRAG-DROP + KONVERSI LINK DRIVE) */
+    /* =========================================================================
+       EDITOR TERPADU & IMPORT FILE (.DOC, .DOCX, .PDF) UNTUK SEMUA LABEL
+       ========================================================================= */
+    function sesuaikanSubKategoriEditor() {
+      var jenis = document.getElementById("edJenis").value;
+      var lbl = document.getElementById("lblSubKategori");
+      var inp = document.getElementById("edKategori");
+      if (jenis === "kajian") {
+        lbl.textContent = "Kategori Kajian (Akidah / Fiqh / Akhlak / Tarikh) *";
+        inp.placeholder = "Contoh: Akidah, Fiqh, Akhlak, atau Tarikh";
+      } else if (jenis === "khutbah") {
+        lbl.textContent = "Jenis Mimbar Khutbah *";
+        inp.placeholder = "Contoh: Khutbah Jumat / Khutbah Idul Fitri";
+      } else if (jenis === "artikel") {
+        lbl.textContent = "Rubrik Artikel *";
+        inp.placeholder = "Contoh: Pendidikan & Keilmuan / Sosial & Keumatan";
+      } else {
+        lbl.textContent = "Kategori Katalog Dakwah *";
+        inp.placeholder = "Contoh: Modul Tahsin / Kitab Turats / Buku Saku Doa";
+      }
+    }
+
+    function bukaEditorKonten(defaultJenis, editId) {
+      if (!isAdminUnlocked()) { bukaModalPin(); return; }
+      PENDING_IMPORT_FILE = null;
+      var statusEl = document.getElementById("statusImportDocPdf");
+      if (statusEl) statusEl.textContent = "";
+
+      var modal = document.getElementById("modalEditorKonten");
+      var titleEl = document.getElementById("judulModalEditor");
+      var idInp = document.getElementById("edKontenId");
+      var jenisSel = document.getElementById("edJenis");
+      var katInp = document.getElementById("edKategori");
+      var jdlInp = document.getElementById("edJudul");
+      var penInp = document.getElementById("edPenulis");
+      var kitInp = document.getElementById("edKitab");
+      var leadInp = document.getElementById("edLead");
+      var arabInp = document.getElementById("edArab");
+      var parInp = document.getElementById("edParagraf");
+      var linkDokInp = document.getElementById("edLinkDokumenExisting");
+      var namaDokInp = document.getElementById("edNamaDokumenExisting");
+
+      if (editId) {
+        var semua = ambilSemuaKonten();
+        var item = semua.find(function(x) { return x.id === editId; });
+        if (item) {
+          titleEl.textContent = "✎ Edit Konten (" + item.jenis.toUpperCase() + ")";
+          idInp.value = item.id;
+          jenisSel.value = item.jenis || "artikel";
+          katInp.value = item.kategori || "";
+          jdlInp.value = item.judul || "";
+          penInp.value = item.penulis || "";
+          kitInp.value = item.kitab || "";
+          leadInp.value = item.lead || "";
+          arabInp.value = item.arab || "";
+          parInp.value = item.paragrafRaw || "";
+          linkDokInp.value = item.linkDokumen || "";
+          namaDokInp.value = item.namaDokumen || "";
+          if (item.namaDokumen && statusEl) {
+            statusEl.textContent = "📎 Dokumen terlampir saat ini: " + item.namaDokumen;
+          }
+        }
+      } else {
+        titleEl.textContent = "✍️ Tambah / Impor Konten Baru (DOC / PDF)";
+        idInp.value = "";
+        jenisSel.value = defaultJenis || "kajian";
+        katInp.value = (defaultJenis === "kajian") ? "Akidah" : (defaultJenis === "khutbah" ? "Khutbah Jumat" : (defaultJenis === "katalog" ? "Modul & Kitab" : "Pendidikan & Keilmuan"));
+        jdlInp.value = "";
+        penInp.value = "Dewan Asatidz Yayasan Darul Muttaqien";
+        kitInp.value = "";
+        leadInp.value = "";
+        arabInp.value = "";
+        parInp.value = "";
+        linkDokInp.value = "";
+        namaDokInp.value = "";
+      }
+
+      sesuaikanSubKategoriEditor();
+      if (modal) modal.style.display = "flex";
+    }
+
+    function tutupEditorKonten() {
+      var modal = document.getElementById("modalEditorKonten");
+      if (modal) modal.style.display = "none";
+    }
+
+    function prosesImportFileDocPdf(file) {
+      if (!file) return;
+      var statusEl = document.getElementById("statusImportDocPdf");
+      var jdlInp = document.getElementById("edJudul");
+      var parInp = document.getElementById("edParagraf");
+      var fileName = file.name || "dokumen";
+      var ext = fileName.split(".").pop().toLowerCase();
+
+      if (["doc", "docx", "pdf"].indexOf(ext) === -1) {
+        alert("Format file didukung: .doc, .docx, atau .pdf");
+        return;
+      }
+
+      if (statusEl) statusEl.textContent = "⏳ Memproses file " + fileName + "...";
+
+      // Isi judul otomatis dari nama file jika kolom judul masih kosong
+      if (jdlInp && !jdlInp.value.trim()) {
+        jdlInp.value = fileName.replace(/\.[^/.]+$/, "").replace(/[-_]+/g, " ");
+      }
+
+      // Simpan data base64 untuk diunggah ke Google Drive saat tombol Simpan diklik
+      var readerB64 = new FileReader();
+      readerB64.onload = function(ev) {
+        PENDING_IMPORT_FILE = {
+          fileName: fileName,
+          fileMime: file.type || (ext === "pdf" ? "application/pdf" : "application/msword"),
+          fileBase64: ev.target.result
+        };
+      };
+      readerB64.readAsDataURL(file);
+
+      // Jika .docx, ekstrak teksnya secara otomatis ke editor menggunakan Mammoth.js
+      if (ext === "docx" && typeof mammoth !== "undefined") {
+        var readerArr = new FileReader();
+        readerArr.onload = function(ev) {
+          mammoth.extractRawText({ arrayBuffer: ev.target.result })
+            .then(function(result) {
+              var teksBersih = String(result.value || "").replace(/\r\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+              if (teksBersih && parInp) {
+                parInp.value = teksBersih;
+              }
+              if (statusEl) statusEl.textContent = "✅ File Word (.docx) '" + fileName + "' berhasil diekstrak & siap dilampirkan!";
+            })
+            .catch(function() {
+              if (statusEl) statusEl.textContent = "📎 File '" + fileName + "' siap dilampirkan ke Google Drive.";
+            });
+        };
+        readerArr.readAsArrayBuffer(file);
+      } else {
+        if (parInp && !parInp.value.trim()) {
+          parInp.value = "Naskah lengkap tersedia pada lampiran dokumen " + fileName + " di bawah ini. Klik tombol Unduh / Baca Dokumen untuk membuka file asli.";
+        }
+        if (statusEl) statusEl.textContent = "✅ File '" + fileName + "' siap diunggah & dilampirkan ke postingan!";
+      }
+    }
+
+    function simpanKontenEditor() {
+      if (!isAdminUnlocked()) { bukaModalPin(); return; }
+      var btnSave = document.getElementById("btnSimpanKontenModal");
+      var idVal = document.getElementById("edKontenId").value.trim();
+      var jenis = document.getElementById("edJenis").value;
+      var kategori = document.getElementById("edKategori").value.trim() || "Umum";
+      var judul = document.getElementById("edJudul").value.trim();
+      var penulis = document.getElementById("edPenulis").value.trim() || "Dewan Asatidz Darul Muttaqien";
+      var kitab = document.getElementById("edKitab").value.trim();
+      var lead = document.getElementById("edLead").value.trim();
+      var arab = document.getElementById("edArab").value.trim();
+      var paragraf = document.getElementById("edParagraf").value.trim();
+      var linkDok = document.getElementById("edLinkDokumenExisting").value.trim();
+      var namaDok = document.getElementById("edNamaDokumenExisting").value.trim();
+
+      if (!judul || !paragraf) {
+        alert("Mohon lengkapi Judul dan Isi Paragraf terlebih dahulu.");
+        return;
+      }
+
+      if (btnSave) { btnSave.disabled = true; btnSave.textContent = "⏳ Menyimpan ke Cloud..."; }
+
+      var finalId = idVal || (jenis.slice(0, 3) + "-" + Date.now());
+      var semua = ambilSemuaKonten();
+      var itemObj = {
+        id: finalId,
+        jenis: jenis,
+        kategori: kategori,
+        judul: judul,
+        penulis: penulis,
+        kitab: kitab,
+        lead: lead || paragraf.slice(0, 150) + "...",
+        arab: arab,
+        paragrafRaw: paragraf,
+        linkDokumen: linkDok,
+        namaDokumen: PENDING_IMPORT_FILE ? PENDING_IMPORT_FILE.fileName : namaDok
+      };
+
+      var idxExist = semua.findIndex(function(x) { return x.id === finalId; });
+      if (idxExist !== -1) {
+        semua[idxExist] = itemObj;
+      } else {
+        semua.unshift(itemObj);
+      }
+      simpanSemuaKonten(semua);
+
+      var payload = {
+        action: "saveKonten",
+        pin: KONFIG_PORTAL.ADMIN_PIN,
+        id: finalId,
+        jenis: jenis,
+        kategori: kategori,
+        judul: judul,
+        penulis: penulis,
+        kitab: kitab,
+        lead: itemObj.lead,
+        arab: arab,
+        paragraf: paragraf,
+        linkDokumen: linkDok,
+        namaDokumen: itemObj.namaDokumen,
+        fileBase64: PENDING_IMPORT_FILE ? PENDING_IMPORT_FILE.fileBase64 : "",
+        fileName: PENDING_IMPORT_FILE ? PENDING_IMPORT_FILE.fileName : "",
+        fileMime: PENDING_IMPORT_FILE ? PENDING_IMPORT_FILE.fileMime : ""
+      };
+
+      kirimKeAppsScript(payload, function(res) {
+        if (res && res.status === "success") {
+          if (res.linkDokumen) {
+            itemObj.linkDokumen = res.linkDokumen;
+            itemObj.namaDokumen = res.namaDokumen || itemObj.namaDokumen;
+            simpanSemuaKonten(semua);
+          }
+        }
+        if (btnSave) { btnSave.disabled = false; btnSave.textContent = "💾 Simpan & Terbitkan ke Database"; }
+        PENDING_IMPORT_FILE = null;
+        tutupEditorKonten();
+        bukaHalaman(jenis);
+      });
+
+      // Jika endpoint kosong/offline, langsung tutup modal
+      if (!KONFIG_PORTAL.APPS_SCRIPT_URL) {
+        if (btnSave) { btnSave.disabled = false; btnSave.textContent = "💾 Simpan & Terbitkan ke Database"; }
+        tutupEditorKonten();
+        bukaHalaman(jenis);
+      }
+    }
+
+    function hapusKontenItem(idItem, jenisTab) {
+      if (!isAdminUnlocked()) { bukaModalPin(); return; }
+      if (!confirm("Hapus konten ini dari database?")) return;
+      var semua = ambilSemuaKonten().filter(function(x) { return x.id !== idItem; });
+      simpanSemuaKonten(semua);
+      bukaHalaman(jenisTab);
+      kirimKeAppsScript({
+        action: "deleteRow",
+        pin: KONFIG_PORTAL.ADMIN_PIN,
+        sheetName: "Pustaka_Konten",
+        id: idItem
+      });
+    }
+
+    /* MANAJEMEN GALERI PHOTO */
     function ambilDaftarGaleri() {
       try {
         var raw = localStorage.getItem(KONFIG_PORTAL.GALERI_STORAGE_KEY);
@@ -1016,7 +1312,7 @@
       }).join("");
     }
 
-    /* MANAJEMEN VIDEO THUMBNAIL + LINK (MODE ADMIN) */
+    /* MANAJEMEN VIDEO THUMBNAIL + LINK */
     function ambilDaftarVideo() {
       try {
         var raw = localStorage.getItem(KONFIG_PORTAL.VIDEO_STORAGE_KEY);
@@ -1069,8 +1365,9 @@
       simpanDaftarVideo(daftar);
 
       kirimKeAppsScript({
-        action: "addVideo",
+        action: "saveVideo",
         pin: KONFIG_PORTAL.ADMIN_PIN,
+        id: idVid,
         judul: judul,
         kategori: kat,
         durasi: durasi,
@@ -1097,10 +1394,16 @@
     }
 
     /* CETAK KHUTBAH 2 KOLOM LANDSCAPE (FONT ARAB 20PT) */
+    function splitParagraf(raw) {
+      return String(raw || "").split(/\n\s*\n|\n/).map(function(s) { return s.trim(); }).filter(Boolean);
+    }
+
     function cetakKhutbahLandscape(idKhutbah) {
-      var k = DATA_KHUTBAH.find(function(x) { return x.id === idKhutbah; });
+      var k = ambilSemuaKonten().find(function(x) { return x.id === idKhutbah; });
       if (!k) return;
-      var paragrafHtml = k.paragraf.map(function(p) { return "<p>" + p + "</p>"; }).join("");
+      var listP = splitParagraf(k.paragrafRaw);
+      var paragrafHtml = listP.map(function(p) { return "<p>" + p + "</p>"; }).join("");
+      var arabHtml = k.arab ? '<div class="arab-20pt">' + k.arab + '</div>' : '';
       var w = window.open("", "_blank", "width=1100,height=720");
       if (!w) { alert("Izinkan pop-up browser untuk mencetak khutbah 2 kolom landscape."); return; }
       w.document.write(
@@ -1117,13 +1420,8 @@
           '.kolom-ganda p { font-size: 11pt; line-height: 1.65; margin: 0 0 10px 0; }' +
           '.arab-20pt { font-family: "Amiri", "Traditional Arabic", serif; font-size: 20pt; line-height: 1.9; text-align: right; direction: rtl; margin: 8px 0 12px 0; color: #000000; break-inside: avoid; }' +
         '</style></head><body>' +
-        '<div class="kop-cetak"><h2>' + k.judul + '</h2><div class="sub">Yayasan Darul Muttaqien Talang Pangeran — ' + k.khatib + '</div></div>' +
-        '<div class="kolom-ganda">' +
-          '<div class="arab-20pt">' + k.salamArab + '</div>' +
-          '<div class="arab-20pt">' + k.dalilArab + '</div>' +
-          paragrafHtml +
-          '<div class="arab-20pt">' + k.doaArab + '</div>' +
-        '</div>' +
+        '<div class="kop-cetak"><h2>' + k.judul + '</h2><div class="sub">Yayasan Darul Muttaqien Talang Pangeran — ' + (k.penulis || 'Dewan Asatidz') + '</div></div>' +
+        '<div class="kolom-ganda">' + arabHtml + paragrafHtml + '</div>' +
         '<scr' + 'ipt>window.onload = function() { window.print(); };<\/scr' + 'ipt>' +
         '</body></html>'
       );
@@ -1131,11 +1429,13 @@
     }
 
     function eksporKhutbahWord(idKhutbah) {
-      var k = DATA_KHUTBAH.find(function(x) { return x.id === idKhutbah; });
+      var k = ambilSemuaKonten().find(function(x) { return x.id === idKhutbah; });
       if (!k) return;
-      var paragrafHtml = k.paragraf.map(function(p) {
+      var listP = splitParagraf(k.paragrafRaw);
+      var paragrafHtml = listP.map(function(p) {
         return '<p style="font-size:11pt; line-height:1.6; text-align:justify;">' + p + '</p>';
       }).join("");
+      var arabHtml = k.arab ? '<p class="arab">' + k.arab + '</p>' : '';
       var docContent =
         '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
         '<head><meta charset="utf-8"><title>' + k.judul + '</title>' +
@@ -1145,11 +1445,8 @@
           '.arab { font-family: "Traditional Arabic", "Amiri", serif; font-size: 20pt; text-align: right; direction: rtl; line-height: 1.9; }' +
         '</style></head><body><div class="Section1">' +
           '<h2 style="text-align:center; color:#0b3d28;">' + k.judul + '</h2>' +
-          '<p style="text-align:center; font-size:10pt;">Yayasan Darul Muttaqien Talang Pangeran — ' + k.khatib + '</p><hr/>' +
-          '<p class="arab">' + k.salamArab + '</p>' +
-          '<p class="arab">' + k.dalilArab + '</p>' +
-          paragrafHtml +
-          '<p class="arab">' + k.doaArab + '</p>' +
+          '<p style="text-align:center; font-size:10pt;">Yayasan Darul Muttaqien Talang Pangeran — ' + (k.penulis || '') + '</p><hr/>' +
+          arabHtml + paragrafHtml +
         '</div></body></html>';
       var blob = new Blob(["\ufeff", docContent], { type: "application/msword" });
       var url = URL.createObjectURL(blob);
@@ -1253,51 +1550,52 @@
       if (navList) navList.classList.remove("open");
     }
 
-    function bacaMajalahLengkap(tipe, idItem) {
+    function bacaMajalahLengkap(idItem) {
       var vp = document.getElementById("mainViewport");
-      var item = null;
-      var rubrikLabel = "";
-
-      if (tipe === "kajian") {
-        item = DATA_KAJIAN.find(function(x) { return x.id === idItem; });
-        rubrikLabel = "Majalah Kajian Islam • Kategori " + (item ? item.kategori : "");
-      } else if (tipe === "khutbah") {
-        item = DATA_KHUTBAH.find(function(x) { return x.id === idItem; });
-        rubrikLabel = "Majalah Mimbar Khutbah Jumat • Format 2 Kolom Landscape";
-      } else if (tipe === "artikel") {
-        item = DATA_ARTIKEL.find(function(x) { return x.id === idItem; });
-        rubrikLabel = item ? item.rubrik : "Rubrik Artikel";
-      }
-
+      var item = ambilSemuaKonten().find(function(x) { return x.id === idItem; });
       if (!item) return;
 
+      var tipe = item.jenis || "artikel";
+      var rubrikLabel = "Majalah " + tipe.toUpperCase() + " • " + (item.kategori || "Umum");
+
       var arabHtml = "";
-      if (item.arab) arabHtml += '<div class="mag-arabic-box">' + item.arab + '</div>';
-      if (item.salamArab) arabHtml += '<div class="khutbah-arab-20">' + item.salamArab + '</div>';
-      if (item.dalilArab) arabHtml += '<div class="khutbah-arab-20">' + item.dalilArab + '</div>';
+      if (item.arab) {
+        arabHtml = (tipe === "khutbah")
+          ? '<div class="khutbah-arab-20">' + item.arab + '</div>'
+          : '<div class="mag-arabic-box">' + item.arab + '</div>';
+      }
 
-      var doaHtml = item.doaArab ? '<div class="khutbah-arab-20">' + item.doaArab + '</div>' : "";
-      var kutipanHtml = item.kutipan ? '<div class="mag-pullquote">“' + item.kutipan + '”</div>' : "";
       var leadHtml = item.lead ? '<div class="mag-lead">“' + item.lead + '”</div>' : "";
-      var paragrafHtml = (item.paragraf || []).map(function(p) { return "<p>" + p + "</p>"; }).join("");
+      var listP = splitParagraf(item.paragrafRaw);
+      var paragrafHtml = listP.map(function(p) { return "<p>" + p + "</p>"; }).join("");
 
-      var tombolKhutbah = (tipe === "khutbah")
+      var lampiranHtml = "";
+      if (item.linkDokumen) {
+        lampiranHtml = '<div style="margin-top:18px; padding-top:14px; border-top:1px dashed #cbd5e1; display:flex; flex-wrap:wrap; gap:10px; align-items:center;">' +
+          '<span style="font-size:0.84rem; font-weight:700; color:var(--emerald-deep);">📎 Lampiran Dokumen Asli (' + (item.namaDokumen || 'DOC / PDF') + '):</span>' +
+          '<a href="' + item.linkDokumen + '" target="_blank" rel="noopener noreferrer" class="btn-doc">📥 Buka / Unduh Dokumen ↗</a>' +
+        '</div>';
+      }
+
+      var tombolKanan = (tipe === "khutbah")
         ? '<div style="display:flex; flex-wrap:wrap; gap:8px;">' +
             '<button type="button" class="btn-primary" onclick="cetakKhutbahLandscape(\'' + item.id + '\')">🖨️ Cetak 2 Kolom Landscape</button>' +
-            '<button type="button" class="btn-doc" onclick="eksporKhutbahWord(\'' + item.id + '\')">📥 Unduh Word (.doc)</button>' +
+            '<button type="button" class="btn-doc" onclick="eksporKhutbahWord(\'' + item.id + '\')">📥 Ekspor Word (.doc)</button>' +
+            '<button type="button" class="btn-edit admin-only-el" onclick="bukaEditorKonten(\'' + tipe + '\', \'' + item.id + '\')">✎ Edit</button>' +
           '</div>'
-        : '<a href="' + KONFIG_PORTAL.WEB_INDUK_URL + '" class="btn-primary">🏛️ Kembali ke Web Induk ↗</a>';
+        : '<div style="display:flex; flex-wrap:wrap; gap:8px;">' +
+            '<button type="button" class="btn-edit admin-only-el" onclick="bukaEditorKonten(\'' + tipe + '\', \'' + item.id + '\')">✎ Edit Tulisan</button>' +
+            '<a href="' + KONFIG_PORTAL.WEB_INDUK_URL + '" class="btn-primary">🏛️ Kembali ke Web Induk ↗</a>' +
+          '</div>';
 
       var metaInfo =
-        (item.kitab ? "Kitab Rujukan: <strong>" + item.kitab + "</strong> • " : "") +
-        (item.khatib ? "Khatib: <strong>" + item.khatib + "</strong> • " : "") +
-        (item.penulis ? "Penulis: <strong>" + item.penulis + "</strong> • " : "") +
-        (item.edisi || item.tanggal || "");
+        (item.kitab ? "Rujukan / Kode: <strong>" + item.kitab + "</strong> • " : "") +
+        (item.penulis ? "Oleh: <strong>" + item.penulis + "</strong>" : "");
 
       vp.innerHTML =
         '<div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px;">' +
-          '<button type="button" class="pill-btn" onclick="bukaHalaman(\'' + tipe + '\')">← Kembali ke Daftar ' + tipe.charAt(0).toUpperCase() + tipe.slice(1) + '</button>' +
-          tombolKhutbah +
+          '<button type="button" class="pill-btn" onclick="bukaHalaman(\'' + tipe + '\')">← Kembali ke Daftar</button>' +
+          tombolKanan +
         '</div>' +
         '<div class="magazine-sheet">' +
           '<div class="mag-masthead">' +
@@ -1309,7 +1607,8 @@
             '<span class="mag-edition-badge">Pustaka Majalah Darul Muttaqien</span>' +
           '</div>' +
           leadHtml +
-          '<div class="mag-columns">' + arabHtml + paragrafHtml + kutipanHtml + doaHtml + '</div>' +
+          '<div class="mag-columns">' + arabHtml + paragrafHtml + '</div>' +
+          lampiranHtml +
         '</div>';
       vp.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -1319,96 +1618,135 @@
       if (!vp) return;
       applyAdminUI();
       var unlocked = isAdminUnlocked();
+      var semuaKonten = ambilSemuaKonten();
 
       if (menu === "kajian") {
         setActiveNav("nav-kajian");
         var katAktif = subFilter || "Semua";
-        var list = (katAktif === "Semua") ? DATA_KAJIAN : DATA_KAJIAN.filter(function(k) { return k.kategori === katAktif; });
+        var listKajian = semuaKonten.filter(function(k) { return k.jenis === "kajian"; });
+        if (katAktif !== "Semua") {
+          listKajian = listKajian.filter(function(k) { return (k.kategori || "").toLowerCase() === katAktif.toLowerCase(); });
+        }
         var pills = ["Semua", "Akidah", "Fiqh", "Akhlak", "Tarikh"].map(function(cat) {
           var activeCls = (cat === katAktif) ? "active" : "";
           return '<button type="button" class="pill-btn ' + activeCls + '" onclick="bukaHalaman(\'kajian\', \'' + cat + '\')">' + cat + '</button>';
         }).join("");
 
-        var cards = list.map(function(k) {
+        var cards = listKajian.map(function(k) {
+          var docBadge = k.namaDokumen ? '<div style="font-size:0.74rem; color:#1d4ed8; font-weight:700; margin-bottom:8px;">📎 Lampiran: ' + k.namaDokumen + '</div>' : '';
           return '<div class="mag-card">' +
             '<div>' +
               '<span class="viewer-tag">📖 Kajian ' + k.kategori + '</span>' +
               '<h4>' + k.judul + '</h4>' +
-              '<div class="mag-card-meta">Kitab: <strong>' + k.kitab + '</strong> • ' + k.edisi + '</div>' +
-              '<p>' + k.lead + '</p>' +
+              '<div class="mag-card-meta">Kitab: <strong>' + (k.kitab || '-') + '</strong> • ' + (k.penulis || '') + '</div>' +
+              '<p>' + (k.lead || '') + '</p>' +
+              docBadge +
             '</div>' +
-            '<button type="button" class="btn-primary" onclick="bacaMajalahLengkap(\'kajian\', \'' + k.id + '\')">Baca Format Majalah →</button>' +
+            '<div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">' +
+              '<button type="button" class="btn-primary" onclick="bacaMajalahLengkap(\'' + k.id + '\')">Baca Majalah →</button>' +
+              '<button type="button" class="btn-edit admin-only-el" onclick="bukaEditorKonten(\'kajian\', \'' + k.id + '\')">✎ Edit</button>' +
+              '<button type="button" class="btn-danger admin-only-el" onclick="hapusKontenItem(\'' + k.id + '\', \'kajian\')">🗑️</button>' +
+            '</div>' +
           '</div>';
         }).join("");
 
         vp.innerHTML =
-          '<span class="viewer-tag">📖 Khazanah Kajian Islam (Edisi Majalah)</span>' +
-          '<h2>Arsip Lengkap Kajian Keislaman Yayasan Darul Muttaqien</h2>' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
+            '<div><span class="viewer-tag">📖 Khazanah Kajian Islam (Edisi Majalah)</span><h2>Arsip Lengkap Kajian Keislaman</h2></div>' +
+            '<button type="button" class="btn-primary admin-only-el" onclick="bukaEditorKonten(\'kajian\')">➕ Tambah / Impor Kajian (DOC/PDF)</button>' +
+          '</div>' +
           '<p style="margin-bottom:14px;">Kelengkapan kajian dari website induk ditampilkan dalam format majalah dua kolom yang elegan.</p>' +
           '<div class="filter-pills">' + pills + '</div>' +
           '<div class="card-grid-3">' + cards + '</div>';
       } else if (menu === "khutbah") {
         setActiveNav("nav-khutbah");
-        var cardsK = DATA_KHUTBAH.map(function(k) {
+        var listKhutbah = semuaKonten.filter(function(k) { return k.jenis === "khutbah"; });
+        var cardsK = listKhutbah.map(function(k) {
+          var docBadge = k.namaDokumen ? '<div style="font-size:0.74rem; color:#1d4ed8; font-weight:700; margin-bottom:8px;">📎 Lampiran: ' + k.namaDokumen + '</div>' : '';
           return '<div class="mag-card">' +
             '<div>' +
-              '<span class="viewer-tag">🕌 Mimbar Khutbah Jumat</span>' +
+              '<span class="viewer-tag">🕌 ' + (k.kategori || 'Mimbar Khutbah') + '</span>' +
               '<h4>' + k.judul + '</h4>' +
-              '<div class="mag-card-meta">Oleh: <strong>' + k.khatib + '</strong> • ' + k.tanggal + '</div>' +
-              '<p>' + k.paragraf[0].slice(0, 140) + '...</p>' +
+              '<div class="mag-card-meta">Oleh: <strong>' + (k.penulis || '') + '</strong></div>' +
+              '<p>' + (k.lead || '') + '</p>' +
+              docBadge +
             '</div>' +
-            '<div style="display:flex; flex-wrap:wrap; gap:8px;">' +
-              '<button type="button" class="btn-primary" onclick="bacaMajalahLengkap(\'khutbah\', \'' + k.id + '\')">📖 Baca Majalah</button>' +
+            '<div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">' +
+              '<button type="button" class="btn-primary" onclick="bacaMajalahLengkap(\'' + k.id + '\')">📖 Baca Majalah</button>' +
               '<button type="button" class="btn-gold" onclick="cetakKhutbahLandscape(\'' + k.id + '\')">🖨️ Cetak 2 Kolom Landscape</button>' +
+              '<button type="button" class="btn-edit admin-only-el" onclick="bukaEditorKonten(\'khutbah\', \'' + k.id + '\')">✎ Edit</button>' +
+              '<button type="button" class="btn-danger admin-only-el" onclick="hapusKontenItem(\'' + k.id + '\', \'khutbah\')">🗑️</button>' +
             '</div>' +
           '</div>';
         }).join("");
 
         vp.innerHTML =
-          '<span class="viewer-tag">🕌 Kumpulan Khutbah Pilihan</span>' +
-          '<h2>Arsip Naskah Khutbah Jumat (Tampilan Majalah &amp; Cetak 2 Kolom Landscape)</h2>' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
+            '<div><span class="viewer-tag">🕌 Kumpulan Khutbah Pilihan</span><h2>Arsip Naskah Khutbah (Majalah &amp; Cetak 2 Kolom Landscape)</h2></div>' +
+            '<button type="button" class="btn-primary admin-only-el" onclick="bukaEditorKonten(\'khutbah\')">➕ Tambah / Impor Khutbah (DOC/PDF)</button>' +
+          '</div>' +
           '<p style="margin-bottom:14px;">Pilih naskah khutbah untuk dibaca dalam format majalah atau langsung dicetak dalam <strong>2 kolom landscape</strong> (teks Arab 20pt).</p>' +
           '<div class="card-grid-3">' + cardsK + '</div>';
       } else if (menu === "artikel") {
         setActiveNav("nav-artikel");
-        var cardsA = DATA_ARTIKEL.map(function(a) {
+        var listArtikel = semuaKonten.filter(function(a) { return a.jenis === "artikel"; });
+        var cardsA = listArtikel.map(function(a) {
+          var docBadge = a.namaDokumen ? '<div style="font-size:0.74rem; color:#1d4ed8; font-weight:700; margin-bottom:8px;">📎 Lampiran: ' + a.namaDokumen + '</div>' : '';
           return '<div class="mag-card">' +
             '<div>' +
-              '<span class="viewer-tag">📰 ' + a.rubrik + '</span>' +
+              '<span class="viewer-tag">📰 ' + (a.kategori || 'Rubrik Artikel') + '</span>' +
               '<h4>' + a.judul + '</h4>' +
-              '<div class="mag-card-meta">Oleh: <strong>' + a.penulis + '</strong> • ' + a.tanggal + '</div>' +
-              '<p>' + a.lead + '</p>' +
+              '<div class="mag-card-meta">Oleh: <strong>' + (a.penulis || '') + '</strong></div>' +
+              '<p>' + (a.lead || '') + '</p>' +
+              docBadge +
             '</div>' +
-            '<button type="button" class="btn-primary" onclick="bacaMajalahLengkap(\'artikel\', \'' + a.id + '\')">Baca Artikel Majalah →</button>' +
+            '<div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">' +
+              '<button type="button" class="btn-primary" onclick="bacaMajalahLengkap(\'' + a.id + '\')">Baca Artikel Majalah →</button>' +
+              '<button type="button" class="btn-edit admin-only-el" onclick="bukaEditorKonten(\'artikel\', \'' + a.id + '\')">✎ Edit</button>' +
+              '<button type="button" class="btn-danger admin-only-el" onclick="hapusKontenItem(\'' + a.id + '\', \'artikel\')">🗑️</button>' +
+            '</div>' +
           '</div>';
         }).join("");
 
         vp.innerHTML =
-          '<span class="viewer-tag">📰 Artikel Keislaman &amp; Pendidikan</span>' +
-          '<h2>Rubrik Artikel Pilihan Yayasan Darul Muttaqien</h2>' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
+            '<div><span class="viewer-tag">📰 Artikel Keislaman &amp; Pendidikan</span><h2>Rubrik Artikel Pilihan Yayasan Darul Muttaqien</h2></div>' +
+            '<button type="button" class="btn-primary admin-only-el" onclick="bukaEditorKonten(\'artikel\')">➕ Tambah / Impor Artikel (DOC/PDF)</button>' +
+          '</div>' +
           '<p style="margin-bottom:14px;">Kumpulan tulisan keilmuan dan wawasan keumatan dalam tampilan majalah elegan.</p>' +
           '<div class="card-grid-3">' + cardsA + '</div>';
       } else if (menu === "katalog") {
         setActiveNav("nav-katalog");
-        var cardsKat = DATA_KATALOG.map(function(c) {
+        var listKat = semuaKonten.filter(function(c) { return c.jenis === "katalog"; });
+        var cardsKat = listKat.map(function(c) {
           var konfArg = "Pesanan Katalog Dakwah: " + c.judul;
+          var docLinkBtn = c.linkDokumen
+            ? '<a href="' + c.linkDokumen + '" target="_blank" rel="noopener noreferrer" class="btn-doc">📥 Unduh File (' + (c.namaDokumen || 'DOC/PDF') + ') ↗</a>'
+            : '';
           return '<div class="mag-card">' +
             '<div>' +
-              '<span class="viewer-tag">📚 ' + c.kode + ' • ' + c.kategori + '</span>' +
+              '<span class="viewer-tag">📚 ' + (c.kitab ? c.kitab + ' • ' : '') + (c.kategori || 'Katalog') + '</span>' +
               '<h4>' + c.judul + '</h4>' +
-              '<div class="mag-card-meta">Penyusun: <strong>' + c.penyusun + '</strong></div>' +
-              '<p>' + c.deskripsi + '</p>' +
+              '<div class="mag-card-meta">Penyusun: <strong>' + (c.penulis || '') + '</strong></div>' +
+              '<p>' + (c.paragrafRaw || c.lead || '') + '</p>' +
             '</div>' +
             '<div style="display:flex; flex-direction:column; gap:8px;">' +
-              '<div style="font-size:0.78rem; font-weight:700; color:var(--emerald-mid); background:var(--emerald-soft); padding:6px 10px; border-radius:7px;">' + c.info + '</div>' +
-              '<button type="button" class="btn-primary" onclick="bukaHalaman(\'konfirmasi\', \'' + konfArg.replace(/'/g, "") + '\')">📩 Konfirmasi Permintaan / Pesanan →</button>' +
+              '<div style="font-size:0.78rem; font-weight:700; color:var(--emerald-mid); background:var(--emerald-soft); padding:6px 10px; border-radius:7px;">' + (c.lead || 'Tersedia di Pusat Katalog Dakwah') + '</div>' +
+              docLinkBtn +
+              '<div style="display:flex; flex-wrap:wrap; gap:6px;">' +
+                '<button type="button" class="btn-primary" onclick="bukaHalaman(\'konfirmasi\', \'' + konfArg.replace(/'/g, "") + '\')">📩 Konfirmasi Pesanan →</button>' +
+                '<button type="button" class="btn-edit admin-only-el" onclick="bukaEditorKonten(\'katalog\', \'' + c.id + '\')">✎ Edit</button>' +
+                '<button type="button" class="btn-danger admin-only-el" onclick="hapusKontenItem(\'' + c.id + '\', \'katalog\')">🗑️</button>' +
+              '</div>' +
             '</div>' +
           '</div>';
         }).join("");
 
         vp.innerHTML =
-          '<span class="viewer-tag">📚 Katalog Dakwah &amp; Bahan Ajar</span>' +
-          '<h2>Katalog Kitab Rujukan, Modul &amp; Materi Dakwah</h2>' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
+            '<div><span class="viewer-tag">📚 Katalog Dakwah &amp; Bahan Ajar</span><h2>Katalog Kitab Rujukan, Modul &amp; Materi Dakwah</h2></div>' +
+            '<button type="button" class="btn-primary admin-only-el" onclick="bukaEditorKonten(\'katalog\')">➕ Tambah / Impor Katalog (DOC/PDF)</button>' +
+          '</div>' +
           '<p style="margin-bottom:14px;">Koleksi kitab, modul pembelajaran, dan buku saku dakwah Yayasan Darul Muttaqien dalam format majalah.</p>' +
           '<div class="card-grid-3">' + cardsKat + '</div>';
       } else if (menu === "galeri") {
@@ -1436,7 +1774,7 @@
                 '<input type="text" id="inputKetFotoGaleri" placeholder="Contoh: Pengajian Rutin Masjid Talang Pangeran" style="width:100%; padding:8px 12px; border:1px solid #cbd5e1; border-radius:8px;" />' +
               '</div>' +
             '</div>' +
-            '<div class="dropzone-galeri" id="dropzoneGaleriBox"' +
+            '<div class="dropzone-box" id="dropzoneGaleriBox"' +
                  ' onclick="document.getElementById(\'inputFileGaleri\').click()"' +
                  ' ondragover="event.preventDefault(); this.classList.add(\'dragover\');"' +
                  ' ondragleave="this.classList.remove(\'dragover\');"' +
